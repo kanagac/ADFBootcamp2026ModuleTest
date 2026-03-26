@@ -48,8 +48,8 @@
 						"referenceName": "DS_blob_dt_common",
 						"type": "DatasetReference",
 						"parameters": {
-							"container": "weekly-test-dataset",
-							"directory": "c5",
+							"container": "input",
+							"directory": "Module_IN1742",
 							"filename": "Customers.csv"
 						}
 					}
