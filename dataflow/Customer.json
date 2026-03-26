@@ -33,6 +33,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "New"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_sql_common",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
 				}
 			],
 			"transformations": [
@@ -80,8 +87,9 @@
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> SyncSources",
-				"SyncSources split(isNull(Target@email),",
-				"     disjoint: false) ~> split1@(FindIfNull, ToUpdate)",
+				"SyncSources split(isNull(Target@customer_id),",
+				"     isNull(Target@email),",
+				"     disjoint: false) ~> split1@(FindIfNull, Email, ToUpdate)",
 				"split1@ToUpdate alterRow(updateIf(true())) ~> upsert",
 				"source derive(Contact = concat(customer_name +'-' + email),",
 				"          Continent = iif(country == 'Australia', 'Australia',\r",
@@ -113,7 +121,17 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> New"
+				"     errorHandlingOption: 'stopOnFirstError') ~> New",
+				"split1@Email sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
