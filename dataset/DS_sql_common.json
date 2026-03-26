@@ -1,5 +1,5 @@
 {
-	"name": "AzureSqlTable1",
+	"name": "DS_sql_common",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_SQL_DB_week",
