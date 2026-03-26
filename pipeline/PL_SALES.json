@@ -1,0 +1,56 @@
+{
+	"name": "PL_SALES",
+	"properties": {
+		"activities": [
+			{
+				"name": "FACTSALES",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Sales",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"dimProducts": {
+								"TableName": "select * from DIM_PRODUCTS_IN1734"
+							},
+							"dimcustomers": {
+								"TableName": "select * from DIM_CUSTOMER_IN1734"
+							},
+							"OrderItem": {
+								"Container": "weekly-test-dataset",
+								"Directory": " ",
+								"FileName": "ADF_WeeklyTest_Database_Records_v1.xlsx",
+								"SheetName": "order_items"
+							}
+						},
+						"linkedServiceParameters": {
+							"dimcustomers": {
+								"schemaLinkedService": {
+									"TableName": "select * from DIM_CUSTOMER_IN1734"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "WeeklyTest"
+		},
+		"annotations": []
+	}
+}
