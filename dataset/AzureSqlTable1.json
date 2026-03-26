@@ -5,8 +5,17 @@
 			"referenceName": "AzureSqlDatabase1",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"DIM_CUSTOMER_IN1722": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "AzureSqlTable",
-		"schema": []
+		"schema": [],
+		"typeProperties": {
+			"schema": "",
+			"table": "DIM_CUSTOMER_IN1722"
+		}
 	}
 }

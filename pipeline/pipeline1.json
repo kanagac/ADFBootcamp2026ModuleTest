@@ -3,8 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Get Metadata1",
-				"type": "GetMetadata",
+				"name": "Customers1",
+				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -13,18 +13,56 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "AzureSqlTable1",
-						"type": "DatasetReference"
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "DIM_CUSTOMER_IN1722"
 					},
-					"fieldList": [
-						{
-							"value": "@pipeline().DataFactory",
-							"type": "Expression"
+					{
+						"name": "Destination",
+						"value": "DIM_CUSTOMER_IN1722"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
 						}
-					]
-				}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference",
+						"parameters": {
+							"DIM_CUSTOMER_IN1722": " "
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference",
+						"parameters": {
+							"DIM_CUSTOMER_IN1722": " "
+						}
+					}
+				]
 			}
 		],
 		"annotations": []
