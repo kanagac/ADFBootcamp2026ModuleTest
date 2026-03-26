@@ -1,0 +1,40 @@
+{
+	"name": "DS_SQL_Orders",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_IN1734",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "order_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "customer_id",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "order_date",
+				"type": "date"
+			},
+			{
+				"name": "order_status",
+				"type": "varchar"
+			},
+			{
+				"name": "order_amount",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "STG_ORDERS_IN1734"
+		}
+	}
+}
