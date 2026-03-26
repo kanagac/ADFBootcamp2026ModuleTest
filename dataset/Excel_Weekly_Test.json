@@ -9,24 +9,24 @@
 			"container": {
 				"type": "string"
 			},
-			"folder": {
+			"tablename": {
 				"type": "string"
 			},
-			"tablename": {
+			"sheetname": {
 				"type": "string"
 			}
 		},
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {
+			"sheetName": {
+				"value": "@dataset().sheetname",
+				"type": "Expression"
+			},
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": {
 					"value": "@dataset().tablename",
-					"type": "Expression"
-				},
-				"folderPath": {
-					"value": "@dataset().folder",
 					"type": "Expression"
 				},
 				"container": {
