@@ -1,0 +1,43 @@
+{
+	"name": "Q2TL",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "Q1TL",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"tablename": "DIM_PRODUCTS_IN1738"
+							},
+							"source2": {
+								"tablename": "DIM_PRODUCTS_IN1738"
+							},
+							"sink1": {
+								"tablename": "DIM_PRODUCTS_IN1738"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
