@@ -1,5 +1,5 @@
 {
-	"name": "AzureSqlTable2",
+	"name": "AzureSqlTable3",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_Target",
@@ -10,7 +10,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "STG_PRODUCTS_IN1743"
+			"table": "DIM_PRODUCTS_IN1743"
 		}
 	}
 }

@@ -1,0 +1,46 @@
+{
+	"name": "PL_WEEKLYTEST",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_QUESTION1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source": {
+								"tablename": "STG_CUSTOMERS_IN1743"
+							},
+							"Target": {
+								"tablename": "DIM_CUSTOMER_IN1743"
+							},
+							"sink1": {
+								"tablename": "DIM_CUSTOMER_IN1743"
+							},
+							"sink2": {
+								"tablename": "DIM_CUSTOMER_IN1743"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}

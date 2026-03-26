@@ -1,0 +1,40 @@
+{
+	"name": "AzureSqlTable4",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Target",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "product_id",
+				"type": "nvarchar"
+			},
+			{
+				"name": "product_name",
+				"type": "varchar"
+			},
+			{
+				"name": "category",
+				"type": "varchar"
+			},
+			{
+				"name": "unit_price",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "dw_created_at",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DIM_PRODUCTS_IN1743"
+		}
+	}
+}
