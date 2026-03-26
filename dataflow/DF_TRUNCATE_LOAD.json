@@ -64,12 +64,12 @@
 				"     format: 'table') ~> DIMProductsTrg",
 				"LEFTJOIN derive(unit_price = toInteger(ProductsSTG@unit_price),",
 				"          dw_created_at = currentDate()) ~> DCTransformation",
-				"derivedColumn1, DIMProductsTrg join(customer_id == DIMProductsTrg@product_id,",
+				"derivedColumn1, DIMProductsTrg join(derivedColumn1@product_id == DIMProductsTrg@product_id,",
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> LEFTJOIN",
-				"ProductsSTG derive(customer_id = toInteger(customer_id)) ~> derivedColumn1",
+				"ProductsSTG derive(product_id = toInteger(product_id)) ~> derivedColumn1",
 				"DCTransformation sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -81,7 +81,17 @@
 				"     preSQLs:['TRUNCATE TABLE \\nDIM_PRODUCTS_IN1716'],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> ProductsSink"
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          product_id = derivedColumn1@product_id,",
+				"          product_name = ProductsSTG@product_name,",
+				"          category = ProductsSTG@category,",
+				"          unit_price,",
+				"          product_id = DIMProductsTrg@product_id,",
+				"          product_name = DIMProductsTrg@product_name,",
+				"          category = DIMProductsTrg@category,",
+				"          dw_created_at",
+				"     )) ~> ProductsSink"
 			]
 		}
 	}
