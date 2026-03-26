@@ -25,14 +25,14 @@
 						"referenceName": "DS_AzureSqlTable",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "TargetInsertSink"
 				},
 				{
 					"dataset": {
 						"referenceName": "DS_AzureSqlTable",
 						"type": "DatasetReference"
 					},
-					"name": "sink2"
+					"name": "TargetUpdateSink"
 				}
 			],
 			"transformations": [
@@ -46,7 +46,7 @@
 					"name": "split1"
 				},
 				{
-					"name": "alterRow"
+					"name": "AlterRow"
 				}
 			],
 			"scriptLines": [
@@ -101,9 +101,9 @@
 				"          created_date = currentDate()) ~> Transformation",
 				"Transformation split(isNull(TargetCustomer@customer_id),",
 				"     !isNull(TargetCustomer@customer_id) && (SourceCustomer@email != TargetCustomer@email),",
-				"     disjoint: false) ~> split1@(insert, update)",
-				"split1@update alterRow(updateIf(true())) ~> alterRow",
-				"split1@insert sink(allowSchemaDrift: true,",
+				"     disjoint: false) ~> split1@(Insert, Update)",
+				"split1@Update alterRow(updateIf(true())) ~> AlterRow",
+				"split1@Insert sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -114,16 +114,16 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
-				"          customer_id = split1@insert@customer_id,",
-				"          customer_name = split1@insert@customer_name,",
-				"          email = split1@insert@email,",
+				"          customer_id = split1@Insert@customer_id,",
+				"          customer_name = split1@Insert@customer_name,",
+				"          email = split1@Insert@email,",
 				"          contact,",
 				"          Continent,",
 				"          country,",
 				"          created_date,",
 				"          dw_created_at",
-				"     )) ~> sink1",
-				"alterRow sink(allowSchemaDrift: true,",
+				"     )) ~> TargetInsertSink",
+				"AlterRow sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:false,",
@@ -135,15 +135,15 @@
 				"     skipDuplicateMapOutputs: true,",
 				"     errorHandlingOption: 'stopOnFirstError',",
 				"     mapColumn(",
-				"          customer_id = split1@update@customer_id,",
-				"          customer_name = split1@update@customer_name,",
-				"          email = split1@update@email,",
+				"          customer_id = split1@Update@customer_id,",
+				"          customer_name = split1@Update@customer_name,",
+				"          email = split1@Update@email,",
 				"          contact,",
 				"          Continent,",
 				"          country,",
 				"          created_date,",
 				"          dw_created_at",
-				"     )) ~> sink2"
+				"     )) ~> TargetUpdateSink"
 			]
 		}
 	}

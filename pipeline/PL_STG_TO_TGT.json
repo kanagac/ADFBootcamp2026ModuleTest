@@ -1,0 +1,49 @@
+{
+	"name": "PL_STG_TO_TGT",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF CUSTOMER STG TO TGT",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_CUSTOMER_STG_TO_TGT",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"SourceCustomer": {
+								"table_name": " STG_CUSTOMERS_IN1727"
+							},
+							"TargetCustomer": {
+								"table_name": "DIM_CUSTOMER_IN1727"
+							},
+							"TargetInsertSink": {
+								"table_name": "DIM_CUSTOMER_IN1727"
+							},
+							"TargetUpdateSink": {
+								"table_name": "DIM_CUSTOMER_IN1727"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "ADF_Weekly_Test/STG_TO_TGT"
+		},
+		"annotations": []
+	}
+}
