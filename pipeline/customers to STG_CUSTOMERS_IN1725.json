@@ -1,0 +1,9 @@
+{
+	"name": "customers to STG_CUSTOMERS_IN1725",
+	"properties": {
+		"folder": {
+			"name": "Copying Data to STG IN1725"
+		},
+		"annotations": []
+	}
+}
