@@ -1,0 +1,54 @@
+{
+	"name": "PL_TRUNCATE_LOAD",
+	"properties": {
+		"description": "Truncating the Target table and then load",
+		"activities": [
+			{
+				"name": "DF_TRUNCATE_LOAD",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_TRUNCATE_LOAD",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"ProductsSTG": {
+								"TableName": "STG_PRODUCTS_IN1716"
+							},
+							"DIMProductsTrg": {
+								"TableName": "DIM_PRODUCTS_IN1716"
+							},
+							"ProductsSink": {
+								"TableName": "DIM_PRODUCTS_IN1716"
+							}
+						},
+						"linkedServiceParameters": {
+							"ProductsSTG": {
+								"schemaLinkedService": {
+									"TableName": "STG_PRODUCTS_IN1716"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "STTM_PROBLEMS"
+		},
+		"annotations": []
+	}
+}

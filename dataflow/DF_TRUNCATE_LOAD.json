@@ -1,0 +1,88 @@
+{
+	"name": "DF_TRUNCATE_LOAD",
+	"properties": {
+		"description": "Truncating Previous Records and Loading into to target table",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_WEEKLY_TEST",
+						"type": "DatasetReference"
+					},
+					"name": "ProductsSTG"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_WEEKLY_TEST",
+						"type": "DatasetReference"
+					},
+					"name": "DIMProductsTrg"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_WEEKLY_TEST",
+						"type": "DatasetReference"
+					},
+					"name": "ProductsSink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "DCTransformation"
+				},
+				{
+					"name": "LEFTJOIN"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          product_id as string,",
+				"          product_name as string,",
+				"          category as string,",
+				"          unit_price as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ProductsSTG",
+				"source(output(",
+				"          product_id as integer,",
+				"          product_name as string,",
+				"          category as string,",
+				"          unit_price as integer,",
+				"          dw_created_at as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> DIMProductsTrg",
+				"LEFTJOIN derive(unit_price = toInteger(ProductsSTG@unit_price),",
+				"          dw_created_at = currentDate()) ~> DCTransformation",
+				"derivedColumn1, DIMProductsTrg join(customer_id == DIMProductsTrg@product_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LEFTJOIN",
+				"ProductsSTG derive(customer_id = toInteger(customer_id)) ~> derivedColumn1",
+				"DCTransformation sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     truncate:true,",
+				"     format: 'table',",
+				"     preSQLs:['TRUNCATE TABLE \\nDIM_PRODUCTS_IN1716'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> ProductsSink"
+			]
+		}
+	}
+}
