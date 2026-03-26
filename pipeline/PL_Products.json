@@ -47,7 +47,8 @@
 						"parameters": {
 							"Container": "weekly-test-dataset",
 							"Directory": " ",
-							"FileName": "ADF_WeeklyTest_Database_Records_v1.xlsx"
+							"FileName": "ADF_WeeklyTest_Database_Records_v1.xlsx",
+							"SheetName": "products"
 						}
 					}
 				],
