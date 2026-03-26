@@ -27,7 +27,8 @@
 					"type": "Expression"
 				},
 				"container": "weekly-test-dataset"
-			}
+			},
+			"firstRowAsHeader": true
 		},
 		"schema": []
 	}
