@@ -6,9 +6,6 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"P_Container": {
-				"type": "string"
-			},
 			"P_SheetName": {
 				"type": "string"
 			}
@@ -24,11 +21,9 @@
 				"type": "AzureBlobStorageLocation",
 				"fileName": " ",
 				"folderPath": " ",
-				"container": {
-					"value": "@dataset().P_Container",
-					"type": "Expression"
-				}
-			}
+				"container": "weekly-test-dataset"
+			},
+			"firstRowAsHeader": true
 		},
 		"schema": []
 	}
