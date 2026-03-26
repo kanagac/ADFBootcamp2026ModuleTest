@@ -6,9 +6,8 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"ds": {
-				"type": "string",
-				"defaultValue": "DIM_CUSTOMER_IN1723"
+			"tgt": {
+				"type": "string"
 			}
 		},
 		"annotations": [],

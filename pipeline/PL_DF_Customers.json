@@ -20,16 +20,22 @@
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"SrcStgCustomers": {
-								"ds": "DIM_CUSTOMER_IN1723"
+								"tgt": " "
 							},
 							"DimCustomers": {
-								"ds": "DIM_CUSTOMER_IN1723"
+								"tgt": " "
+							}
+						},
+						"linkedServiceParameters": {
+							"SrcStgCustomers": {
+								"schemaLinkedService": {
+									"tgt": " "
+								}
 							},
-							"sink2": {
-								"ds": "DIM_CUSTOMER_IN1723"
-							},
-							"sink3": {
-								"ds": "DIM_CUSTOMER_IN1723"
+							"DimCustomers": {
+								"schemaLinkedService": {
+									"tgt": " "
+								}
 							}
 						}
 					},
