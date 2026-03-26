@@ -1,0 +1,46 @@
+{
+	"name": "PL_DF_Customers",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Customers",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"SrcStgCustomers": {
+								"ds": "DIM_CUSTOMER_IN1723"
+							},
+							"DimCustomers": {
+								"ds": "DIM_CUSTOMER_IN1723"
+							},
+							"sink2": {
+								"ds": "DIM_CUSTOMER_IN1723"
+							},
+							"sink3": {
+								"ds": "DIM_CUSTOMER_IN1723"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}

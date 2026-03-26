@@ -1,0 +1,124 @@
+{
+	"name": "DF_Customers",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Tgt_db",
+						"type": "DatasetReference"
+					},
+					"name": "SrcStgCustomers"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Tgt_db",
+						"type": "DatasetReference"
+					},
+					"name": "DimCustomers"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_Tgt_db",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Tgt_db",
+						"type": "DatasetReference"
+					},
+					"name": "sink3"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "derivedcolumns"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as string,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SrcStgCustomers",
+				"source(output(",
+				"          customer_id as string,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> DimCustomers",
+				"SrcStgCustomers, DimCustomers join(SrcStgCustomers@customer_id == DimCustomers@customer_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 derive(contact = concat(SrcStgCustomers@customer_name,'-',SrcStgCustomers@email),",
+				"          continent = case(DimCustomers@country=='Australia','Australia',     DimCustomers@country=='India','Asia',     DimCustomers@country=='United Kingdom' || DimCustomers@country=='Germany', 'Europe',     DimCustomers@country=='Canada' || DimCustomers@country =='United States', 'North America'),",
+				"          created_date = currentDate()) ~> derivedcolumns",
+				"derivedcolumns split(isNull(SrcStgCustomers@customer_id),",
+				"     !isNull(SrcStgCustomers@customer_id),",
+				"     disjoint: false) ~> split1@(insert, update)",
+				"split1@update alterRow(updateIf(1==1)) ~> alterRow1",
+				"split1@insert sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          customer_id as string,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          customer_id as string,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as string",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink3"
+			]
+		}
+	}
+}
