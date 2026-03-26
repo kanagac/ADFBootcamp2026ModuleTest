@@ -35,7 +35,11 @@
 					"name": "SinkFact"
 				},
 				{
-					"name": "sink1"
+					"dataset": {
+						"referenceName": "DS_SQL_WEEKLY_TEST",
+						"type": "DatasetReference"
+					},
+					"name": "SinkFact1"
 				}
 			],
 			"transformations": [
@@ -81,8 +85,14 @@
 				"     errorHandlingOption: 'stopOnFirstError') ~> SinkFact",
 				"Join sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1"
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> SinkFact1"
 			]
 		}
 	}
