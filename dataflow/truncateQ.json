@@ -1,0 +1,37 @@
+{
+	"name": "truncateQ",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_sql_common",
+						"type": "DatasetReference"
+					},
+					"name": "Products"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "transformation"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          product_id as string,",
+				"          product_name as string,",
+				"          category as string,",
+				"          unit_price as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Products",
+				"Products derive(unit_price = toInteger(unit_price),",
+				"          dw_loaded_at = currentTimestamp()) ~> transformation"
+			]
+		}
+	}
+}

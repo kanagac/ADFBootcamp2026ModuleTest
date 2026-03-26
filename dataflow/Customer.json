@@ -54,6 +54,9 @@
 				},
 				{
 					"name": "Transformations"
+				},
+				{
+					"name": "selectSourceOnline"
 				}
 			],
 			"scriptLines": [
@@ -102,7 +105,28 @@
 				"          country_ = iif(country == 'USA', 'United States of America', iif(country == 'UK', 'United Kingdom', country)),",
 				"          dw_created_at = currentTimestamp(),",
 				"          each(match(true()), $$ = iif(isNull($$), '', $$))) ~> Transformations",
-				"upsert sink(allowSchemaDrift: true,",
+				"upsert select(mapColumn(",
+				"          customer_id = split1@ToUpdate@customer_id,",
+				"          customer_name = split1@ToUpdate@customer_name,",
+				"          email = split1@ToUpdate@email,",
+				"          country = country_,",
+				"          created_date = split1@ToUpdate@created_date,",
+				"          Contact = split1@ToUpdate@Contact,",
+				"          Continent = split1@ToUpdate@Continent,",
+				"          country_,",
+				"          dw_created_at,",
+				"          customer_id = split1@ToUpdate@customer_id,",
+				"          customer_name = split1@ToUpdate@customer_name,",
+				"          email = split1@ToUpdate@email,",
+				"          Contact = split1@ToUpdate@Contact,",
+				"          Continent = split1@ToUpdate@Continent,",
+				"          Country = split1@ToUpdate@Country,",
+				"          Created_Date = split1@ToUpdate@Created_Date,",
+				"          Dw_create_date = split1@ToUpdate@created_date",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectSourceOnline",
+				"selectSourceOnline sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",

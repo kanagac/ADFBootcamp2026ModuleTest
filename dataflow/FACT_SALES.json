@@ -117,7 +117,7 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> ORDERITEMS",
-				"ORDERS derive() ~> ToFilterTypeOfTransformation",
+				"ORDERS derive(filter = ERROR_FUNCTION('')) ~> ToFilterTypeOfTransformation",
 				"PAYMENTS derive() ~> TransformationForPayments",
 				"derivedColumn1, ORDERITEMS join(derivedColumn1@product_id == ORDERITEMS@product_id,",
 				"     joinType:'left',",
