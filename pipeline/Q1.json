@@ -17,7 +17,21 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "Customer",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source": {
+								"tablename": "STG_CUSTOMERS_IN1742"
+							},
+							"Target": {
+								"tablename": "DIM_CUSTOMER_IN1742"
+							},
+							"Updated": {
+								"tablename": "DIM_CUSTOMER_IN1742"
+							},
+							"New": {
+								"tablename": "DIM_CUSTOMER_IN1742"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
