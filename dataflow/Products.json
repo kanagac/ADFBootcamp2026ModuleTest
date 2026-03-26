@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "Products",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -26,6 +26,9 @@
 				}
 			],
 			"scriptLines": [
+				"parameters{",
+				"     parameter1 as string",
+				"}",
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     ignoreNoFilesFound: false) ~> source1",
