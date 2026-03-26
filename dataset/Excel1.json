@@ -8,7 +8,7 @@
 		"parameters": {
 			"Excel1": {
 				"type": "string",
-				"defaultValue": " "
+				"defaultValue": "  "
 			}
 		},
 		"annotations": [],
