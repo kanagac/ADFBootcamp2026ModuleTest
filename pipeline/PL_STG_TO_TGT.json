@@ -20,7 +20,7 @@
 						"type": "DataFlowReference",
 						"datasetParameters": {
 							"SourceCustomer": {
-								"table_name": " STG_CUSTOMERS_IN1727"
+								"table_name": "STG_CUSTOMERS_IN1727"
 							},
 							"TargetCustomer": {
 								"table_name": "DIM_CUSTOMER_IN1727"
