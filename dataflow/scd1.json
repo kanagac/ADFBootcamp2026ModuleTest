@@ -27,7 +27,7 @@
 					"name": "split1"
 				},
 				{
-					"name": "derivedColumn1"
+					"name": "alterRow1"
 				}
 			],
 			"scriptLines": [
@@ -42,12 +42,12 @@
 				"     broadcast: 'auto')~> join1",
 				"join1 split(ERROR_FUNCTION(''),",
 				"     disjoint: false) ~> split1@(Input, Default)",
-				"split1@Input derive() ~> derivedColumn1",
-				"split1@Default sink(allowSchemaDrift: true,",
+				"split1@Default alterRow() ~> alterRow1",
+				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink1",
-				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"split1@Input sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true) ~> sink2"
