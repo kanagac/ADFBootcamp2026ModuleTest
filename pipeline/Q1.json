@@ -1,5 +1,5 @@
 {
-	"name": "SCD_1",
+	"name": "Q1",
 	"properties": {
 		"activities": [
 			{
@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataflow": {
-						"referenceName": "scd1",
+						"referenceName": "Customer",
 						"type": "DataFlowReference"
 					},
 					"compute": {
@@ -28,7 +28,7 @@
 			}
 		],
 		"folder": {
-			"name": "SCD"
+			"name": "Flows"
 		},
 		"annotations": []
 	}

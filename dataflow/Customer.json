@@ -1,5 +1,5 @@
 {
-	"name": "scd1",
+	"name": "Customer",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
