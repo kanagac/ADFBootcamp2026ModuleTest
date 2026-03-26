@@ -5,18 +5,31 @@
 		"typeProperties": {
 			"sources": [
 				{
-					"name": "Source"
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "SRC"
 				},
 				{
-					"name": "Target"
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "TGT"
 				}
 			],
 			"sinks": [
 				{
-					"name": "sink1"
-				},
-				{
-					"name": "sink2"
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_BLOB",
+						"type": "LinkedServiceReference"
+					}
 				}
 			],
 			"transformations": [
@@ -30,32 +43,95 @@
 					"name": "split1"
 				},
 				{
+					"name": "derivedColumn2"
+				},
+				{
 					"name": "alterRow1"
 				}
 			],
 			"scriptLines": [
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> Source",
-				"source(allowSchemaDrift: true,",
-				"     validateSchema: false) ~> Target",
-				"Source, Target join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"source(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SRC",
+				"source(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> TGT",
+				"SRC, TGT join(SRC@customer_id == TGT@customer_id,",
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> join1",
-				"join1 derive() ~> derivedColumn1",
-				"derivedColumn1 split(ERROR_FUNCTION(''),",
-				"     ERROR_FUNCTION(''),",
-				"     disjoint: false) ~> split1@(Insert, Update)",
-				"split1@Update alterRow() ~> alterRow1",
-				"split1@Insert sink(allowSchemaDrift: true,",
+				"split1@insert derive(contract = concat(split1@insert@customer_name,'-',split1@insert@email),",
+				"          Continent = case(\r",
+				"    split1@insert@country=='Australia','Australia',\r",
+				"    split1@insert@country=='India','Asia',\r",
+				"    split1@insert@country=='United Kingdom','Europe',\r",
+				"    split1@insert@country=='Germany','Europe',\r",
+				"    split1@insert@country=='Canada','North America',\r",
+				"    split1@insert@country=='United States','North America'\r",
+				"    ) \r",
+				",",
+				"          created_date = currentDate(),",
+				"          country = case(\r",
+				"    split1@insert@country=='USA','United States of America',\r",
+				"    split1@insert@country=='UK','United Kingdom'\r",
+				")) ~> derivedColumn1",
+				"join1 split(isNull(TGT@customer_id),",
+				"     !isNull(TGT@customer_id),",
+				"     disjoint: false) ~> split1@(insert, update)",
+				"split1@update derive(email = concat(split1@update@customer_name,'-',split1@update@email),",
+				"          country = case( \r",
+				"    split1@update@country=='Australia','Australia',\r",
+				"    split1@update@country=='India','Asia',\r",
+				"    split1@update@country=='United Kingdom','Europe',\r",
+				"    split1@update@country=='Germany','Europe',\r",
+				"    split1@update@country=='Canada','North America',\r",
+				"    split1@update@country=='United States','North America',\r",
+				"    split1@update@country=='USA','United States of America',\r",
+				"    split1@update@country=='UK','United Kingdom'   \r",
+				"     ) ,",
+				"          created_date = currentDate()) ~> derivedColumn2",
+				"derivedColumn2 alterRow(updateIf(1==1)) ~> alterRow1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     input(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as date",
+				"     ),",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1",
-				"alterRow1 sink(allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink2"
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id = split1@insert@customer_id,",
+				"          customer_name = split1@insert@customer_name,",
+				"          email = contract,",
+				"          country = Continent,",
+				"          created_date = split1@insert@created_date",
+				"     )) ~> sink1"
 			]
 		}
 	}
