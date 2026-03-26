@@ -6,7 +6,7 @@
 			"sources": [
 				{
 					"dataset": {
-						"referenceName": "Excel1",
+						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference"
 					},
 					"name": "source1"
@@ -29,9 +29,17 @@
 				"parameters{",
 				"     parameter1 as string",
 				"}",
-				"source(allowSchemaDrift: true,",
+				"source(output(",
+				"          order_id as integer,",
+				"          customer_id as integer,",
+				"          order_date as date,",
+				"          order_status as string,",
+				"          order_amount as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     ignoreNoFilesFound: false) ~> source1",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source1",
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
