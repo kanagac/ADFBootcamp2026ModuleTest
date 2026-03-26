@@ -1,0 +1,331 @@
+{
+	"name": "DF_FACT_SALES",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sourceOrderItems"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sourceForDimProducts"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sourceForDimCustomers"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sourceOrders"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sourcePayments"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "Target"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "selectForOrderItems"
+				},
+				{
+					"name": "selectForDimProducts"
+				},
+				{
+					"name": "joinOTandPROD"
+				},
+				{
+					"name": "derivedOrdItem"
+				},
+				{
+					"name": "selectForDimCustomer"
+				},
+				{
+					"name": "joinOrderandCUST"
+				},
+				{
+					"name": "selectForOrders"
+				},
+				{
+					"name": "derivedColumnOrders"
+				},
+				{
+					"name": "selectPayments"
+				},
+				{
+					"name": "derivedColumnPayments"
+				},
+				{
+					"name": "joinOrders"
+				},
+				{
+					"name": "joinPaymentANDOI"
+				},
+				{
+					"name": "lookup2"
+				},
+				{
+					"name": "selectTarget"
+				},
+				{
+					"name": "lookup3"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Prop_0 as string,",
+				"          Prop_1 as string,",
+				"          Prop_2 as string,",
+				"          Prop_3 as string,",
+				"          Prop_4 as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceOrderItems",
+				"source(output(",
+				"          product_id as integer,",
+				"          product_name as string,",
+				"          category as string,",
+				"          unit_price as integer,",
+				"          dw_created_at as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceForDimProducts",
+				"source(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          concat as string,",
+				"          Continent as string,",
+				"          country as string,",
+				"          created_date as timestamp,",
+				"          dw_created_at as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceForDimCustomers",
+				"source(output(",
+				"          Prop_0 as string,",
+				"          Prop_1 as string,",
+				"          Prop_2 as string,",
+				"          Prop_3 as string,",
+				"          Prop_4 as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourceOrders",
+				"source(output(",
+				"          Prop_0 as string,",
+				"          Prop_1 as string,",
+				"          Prop_2 as string,",
+				"          Prop_3 as string,",
+				"          Prop_4 as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> sourcePayments",
+				"source(output(",
+				"          sale_id as integer,",
+				"          product_name as string,",
+				"          category as string,",
+				"          unit_price as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          concat as string,",
+				"          country as string,",
+				"          order_date as date,",
+				"          order_amount as integer,",
+				"          order_status as string,",
+				"          payment_mode as string,",
+				"          payment_status as string,",
+				"          payment_date as date,",
+				"          dw_loaded_at as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> Target",
+				"sourceOrderItems select(mapColumn(",
+				"          order_item_id = Prop_0,",
+				"          order_id = Prop_1,",
+				"          product_id = Prop_2,",
+				"          quantity = Prop_3,",
+				"          item_amount = Prop_4",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectForOrderItems",
+				"sourceForDimProducts select(mapColumn(",
+				"          PROd_product_id = product_id,",
+				"          PROD_product_name = product_name,",
+				"          PROD_category = category,",
+				"          PROD_unit_price = unit_price,",
+				"          PROD_dw_created_at = dw_created_at",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectForDimProducts",
+				"derivedOrdItem, selectForDimProducts join(product_id == PROd_product_id,",
+				"     joinType:'right',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinOTandPROD",
+				"selectForOrderItems derive(product_id = toInteger(product_id),",
+				"          order_id = toInteger(order_id)) ~> derivedOrdItem",
+				"sourceForDimCustomers select(mapColumn(",
+				"          CUST_customer_id = customer_id,",
+				"          CUST_customer_name = customer_name,",
+				"          CUST_email = email,",
+				"          CUST_concat = concat,",
+				"          CUST_Continent = Continent,",
+				"          CUST_country = country,",
+				"          CUST_created_date = created_date,",
+				"          CUST_dw_created_at = dw_created_at",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectForDimCustomer",
+				"selectForDimCustomer, joinOrders join(CUST_customer_id == ORD_customer_id,",
+				"     joinType:'outer',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinOrderandCUST",
+				"sourceOrders select(mapColumn(",
+				"          ORD_order_id = Prop_0,",
+				"          ORD_customer_id = Prop_1,",
+				"          ORD_order_date = Prop_2,",
+				"          ORD_order_status = Prop_3,",
+				"          ORD_order_amount = Prop_4",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectForOrders",
+				"selectForOrders derive(ORD_order_id = toInteger(ORD_order_id),",
+				"          ORD_customer_id = toInteger(ORD_customer_id),",
+				"          ORD_order_date = toDate(ORD_order_date)) ~> derivedColumnOrders",
+				"sourcePayments select(mapColumn(",
+				"          PAY_payment_id = Prop_0,",
+				"          PAY_order_id = Prop_1,",
+				"          PAY_payment_mode = Prop_2,",
+				"          PAY_payment_status = Prop_3,",
+				"          PAY_payment_date = Prop_4",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectPayments",
+				"selectPayments derive(PAY_payment_id = toInteger(PAY_payment_id),",
+				"          PAY_order_id = toInteger(PAY_order_id),",
+				"          PAY_payment_date = toDate(PAY_payment_date)) ~> derivedColumnPayments",
+				"derivedColumnOrders, derivedOrdItem join(ORD_order_id == order_id,",
+				"     joinType:'outer',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinOrders",
+				"derivedColumnPayments, derivedOrdItem join(PAY_order_id == order_id,",
+				"     joinType:'outer',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinPaymentANDOI",
+				"joinOTandPROD, selectTarget lookup(PROD_product_name == TAR_product_name,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup2",
+				"Target select(mapColumn(",
+				"          TAR_sale_id = sale_id,",
+				"          TAR_product_name = product_name,",
+				"          TAR_category = category,",
+				"          TAR_unit_price = unit_price,",
+				"          TAR_customer_name = customer_name,",
+				"          TAR_email = email,",
+				"          TAR_concat = concat,",
+				"          TAR_country = country,",
+				"          TAR_order_date = order_date,",
+				"          TAR_order_amount = order_amount,",
+				"          TAR_order_status = order_status,",
+				"          TAR_payment_mode = payment_mode,",
+				"          TAR_payment_status = payment_status,",
+				"          TAR_payment_date = payment_date,",
+				"          TAR_dw_loaded_at = dw_loaded_at",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> selectTarget",
+				"joinOrderandCUST, selectTarget lookup(CUST_customer_name == TAR_customer_name,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookup3",
+				"lookup2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          product_name = PROD_product_name,",
+				"          category = PROD_category,",
+				"          unit_price = PROD_unit_price",
+				"     )) ~> sink1",
+				"lookup3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_name = CUST_customer_name,",
+				"          email = CUST_email,",
+				"          concat = CUST_concat,",
+				"          country = CUST_country,",
+				"          order_status = TAR_order_status",
+				"     )) ~> sink2"
+			]
+		}
+	}
+}
