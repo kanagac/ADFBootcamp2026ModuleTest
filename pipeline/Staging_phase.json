@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "Staging_phase",
 	"properties": {
 		"activities": [
 			{
@@ -322,7 +322,7 @@
 			}
 		],
 		"folder": {
-			"name": "Staging_tables"
+			"name": "PL_Staging_tables"
 		},
 		"annotations": []
 	}
