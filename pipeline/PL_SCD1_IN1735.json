@@ -1,0 +1,46 @@
+{
+	"name": "PL_SCD1_IN1735",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow for scd1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SCD1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"SatgeCustomer": {
+								"TableName": "STG_CUSTOMERS_IN1735"
+							},
+							"TargetCustomer": {
+								"TableName": "DIM_CUSTOMER_IN1735"
+							},
+							"sink1": {
+								"TableName": "DIM_CUSTOMER_IN1735"
+							},
+							"sink2": {
+								"TableName": "DIM_CUSTOMER_IN1735"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}

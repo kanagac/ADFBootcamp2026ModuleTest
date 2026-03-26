@@ -1,0 +1,143 @@
+{
+	"name": "DF_SCD1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "SatgeCustomer"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "TargetCustomer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AddingConcatAndContinent"
+				},
+				{
+					"name": "RenamingColumn"
+				},
+				{
+					"name": "lookuptarget"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as string,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SatgeCustomer",
+				"source(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          concat as string,",
+				"          Continent as string,",
+				"          country as string,",
+				"          created_date as timestamp,",
+				"          dw_created_at as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> TargetCustomer",
+				"SatgeCustomer derive(concat = customer_name + '-' + email,",
+				"          Continent = /* case(country=='Australia', 'Australia', case(country == 'India', 'Asia', case(country in ('United Kingdom', 'Germany'), 'Europe', case(country in ('Canada','United States'), 'North Amerika', false_expression)))) */\r",
+				"\r",
+				"iif(country=='Australia', 'Australia', iif(country == 'India', 'Asia', iif(country=='United Kingdom' || country == 'Germany', 'Europe', iif(country =='Canada' ||  country == 'United States', 'North Amerika', 'UN Known')))),",
+				"          customer_id = toInteger(customer_id),",
+				"          created_date = toDate(created_date),",
+				"          dw_created_at = currentTimestamp()) ~> AddingConcatAndContinent",
+				"TargetCustomer select(mapColumn(",
+				"          SRC_customer_id = customer_id,",
+				"          SRC_customer_name = customer_name,",
+				"          SRC_email = email,",
+				"          SRC_concat = concat,",
+				"          SRC_Continent = Continent,",
+				"          SRC_country = country,",
+				"          SRC_created_date = created_date,",
+				"          SRC_dw_created_at = dw_created_at",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> RenamingColumn",
+				"AddingConcatAndContinent, RenamingColumn lookup(customer_id == SRC_customer_id,",
+				"     multiple: false,",
+				"     pickup: 'any',",
+				"     broadcast: 'auto')~> lookuptarget",
+				"lookuptarget split(isNull(SRC_customer_id),",
+				"     disjoint: false) ~> split1@(NewRecord, UpdatingRecord)",
+				"split1@UpdatingRecord alterRow(updateIf(1==1)) ~> alterRow1",
+				"split1@NewRecord sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 2,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id,",
+				"          customer_name,",
+				"          email,",
+				"          concat,",
+				"          Continent,",
+				"          country,",
+				"          created_date,",
+				"          dw_created_at",
+				"     )) ~> sink1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['customer_id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     saveOrder: 1,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+			]
+		}
+	}
+}
