@@ -1,0 +1,16 @@
+{
+	"name": "DS_SQL_DB_DIMCUST",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_DB",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "DIM_CUSTOMER_IN1725"
+		}
+	}
+}
