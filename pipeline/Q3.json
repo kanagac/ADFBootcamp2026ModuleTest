@@ -17,7 +17,15 @@
 				"typeProperties": {
 					"dataflow": {
 						"referenceName": "truncateQ",
-						"type": "DataFlowReference"
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"Products": {
+								"tablename": "STG_PRODUCTS_IN1742"
+							},
+							"sink1": {
+								"tablename": "DIM_PRODUCTS_IN1742"
+							}
+						}
 					},
 					"compute": {
 						"coreCount": 8,
