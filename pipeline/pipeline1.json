@@ -15,16 +15,15 @@
 				},
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "Excel1",
+						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
-						"columnCount"
-					],
-					"storeSettings": {
-						"type": "AzureBlobStorageReadSettings",
-						"enablePartitionDiscovery": false
-					}
+						{
+							"value": "@pipeline().DataFactory",
+							"type": "Expression"
+						}
+					]
 				}
 			}
 		],
