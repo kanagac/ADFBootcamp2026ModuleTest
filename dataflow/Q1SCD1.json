@@ -130,9 +130,9 @@
 				"          customer_id = split1@update@customer_id,",
 				"          customer_name = split1@update@customer_name,",
 				"          email = split1@update@email,",
+				"          country,",
 				"          contact,",
 				"          Continent,",
-				"          country,",
 				"          created_date = split1@update@created_date,",
 				"          dw_created_at",
 				"     )) ~> sink2"
