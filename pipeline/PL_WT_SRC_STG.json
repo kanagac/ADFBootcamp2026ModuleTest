@@ -1,6 +1,293 @@
 {
-	"name": "PL_WT_Q1",
+	"name": "PL_WT_SRC_STG",
 	"properties": {
+		"activities": [
+			{
+				"name": "STG_CUSTOMERS_IN1733",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_BLOB_EXCEL",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": "ADF_WeeklyTest_Database_Records_v1.xlsx",
+							"Container": "weekly-test-dataset",
+							"sheetname": "customers"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"table_name": "STG_CUSTOMER_IN1733"
+						}
+					}
+				]
+			},
+			{
+				"name": "STG_PRODUCTS_IN1733",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_BLOB_EXCEL",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": "ADF_WeeklyTest_Database_Records_v1.xlsx",
+							"Container": "weekly-test-dataset",
+							"sheetname": "products"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"table_name": "STG_PRODUCTS_IN1733"
+						}
+					}
+				]
+			},
+			{
+				"name": "STG_ORDERS_IN1733",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_BLOB_EXCEL",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": "ADF_WeeklyTest_Database_Records_v1.xlsx",
+							"Container": "weekly-test-dataset",
+							"sheetname": "orders"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"table_name": "STG_ORDERS_IN1733"
+						}
+					}
+				]
+			},
+			{
+				"name": "STG_ORDER_ITEMS_IN1733",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_BLOB_EXCEL",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": "ADF_WeeklyTest_Database_Records_v1.xlsx",
+							"Container": "weekly-test-dataset",
+							"sheetname": "order_items"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"table_name": "STG_ORDER_ITEMS_IN1733"
+						}
+					}
+				]
+			},
+			{
+				"name": "STG_PAYMENTS_IN1733",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_BLOB_EXCEL",
+						"type": "DatasetReference",
+						"parameters": {
+							"FileName": "ADF_WeeklyTest_Database_Records_v1.xlsx",
+							"Container": "weekly-test-dataset",
+							"sheetname": "payments"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL",
+						"type": "DatasetReference",
+						"parameters": {
+							"table_name": "STG_PAYMENT_IN1733"
+						}
+					}
+				]
+			}
+		],
 		"annotations": []
 	}
 }
