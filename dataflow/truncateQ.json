@@ -12,7 +12,15 @@
 					"name": "Products"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_sql_common",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "transformation"
@@ -29,8 +37,19 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> Products",
-				"Products derive(unit_price = toInteger(unit_price),",
-				"          dw_loaded_at = currentTimestamp()) ~> transformation"
+				"Products derive(unit_price_ = toInteger(unit_price),",
+				"          dw_loaded_at = currentTimestamp(),",
+				"          each(match(true()), $$ = iif(isNull($$), '', $$))) ~> transformation",
+				"transformation sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink1"
 			]
 		}
 	}
