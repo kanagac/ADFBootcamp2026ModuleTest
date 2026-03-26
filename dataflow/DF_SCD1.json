@@ -1,0 +1,119 @@
+{
+	"name": "DF_SCD1",
+	"properties": {
+		"description": "Implementing SCD1 with ETL Analaysis",
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_WEEKLY_TEST",
+						"type": "DatasetReference"
+					},
+					"name": "CustomerSTG"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_WEEKLY_TEST",
+						"type": "DatasetReference"
+					},
+					"name": "DIMCustomerTRG"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_WEEKLY_TEST",
+						"type": "DatasetReference"
+					},
+					"name": "INSERTSink"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_WEEKLY_TEST",
+						"type": "DatasetReference"
+					},
+					"name": "UPDATESink"
+				}
+			],
+			"transformations": [
+				{
+					"name": "CSSCD1"
+				},
+				{
+					"name": "AlterRowUpdation"
+				},
+				{
+					"name": "LEFTJOINCusomter"
+				},
+				{
+					"name": "DCTransformation"
+				},
+				{
+					"name": "Typecasting"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as string,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CustomerSTG",
+				"source(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          contact as string,",
+				"          Continent as string,",
+				"          country as string,",
+				"          created_date as timestamp,",
+				"          dw_created_at as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> DIMCustomerTRG",
+				"DCTransformation split(isNull(Typecasting@customer_id),",
+				"     !isNull(Typecasting@customer_id),",
+				"     disjoint: false) ~> CSSCD1@(NewINSERTION, UPDATION)",
+				"CSSCD1@UPDATION alterRow(updateIf(true())) ~> AlterRowUpdation",
+				"Typecasting, DIMCustomerTRG join(Typecasting@customer_id == DIMCustomerTRG@customer_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LEFTJOINCusomter",
+				"LEFTJOINCusomter derive(contact = concat(CustomerSTG@customer_name,'-',CustomerSTG@email),",
+				"          Continent = ERROR_FUNCTION(''),",
+				"          country = ERROR_FUNCTION(''),",
+				"          dw_created_at = currentDate()) ~> DCTransformation",
+				"CustomerSTG derive(customer_id = toInteger(customer_id)) ~> Typecasting",
+				"CSSCD1@NewINSERTION sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> INSERTSink",
+				"AlterRowUpdation sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> UPDATESink"
+			]
+		}
+	}
+}

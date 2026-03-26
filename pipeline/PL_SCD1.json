@@ -1,0 +1,63 @@
+{
+	"name": "PL_SCD1",
+	"properties": {
+		"description": "Implementation of SCD1 and ETL analysis",
+		"activities": [
+			{
+				"name": "DF_SCD1",
+				"description": "Implementing SCD1 with ETL analysis",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SCD1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"CustomerSTG": {
+								"TableName": "STG_CUSTOMERS_IN1716"
+							},
+							"DIMCustomerTRG": {
+								"TableName": "DIM_CUSTOMER_IN1716"
+							},
+							"INSERTSink": {
+								"TableName": "DIM_CUSTOMER_IN1716"
+							},
+							"UPDATESink": {
+								"TableName": "DIM_CUSTOMER_IN1716"
+							}
+						},
+						"linkedServiceParameters": {
+							"INSERTSink": {
+								"schemaLinkedService": {
+									"TableName": "STG_CUSTOMERS_IN1716"
+								}
+							},
+							"UPDATESink": {
+								"schemaLinkedService": {
+									"TableName": "DIM_CUSTOMER_IN1716"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "STTM_PROBLEMS"
+		},
+		"annotations": []
+	}
+}
