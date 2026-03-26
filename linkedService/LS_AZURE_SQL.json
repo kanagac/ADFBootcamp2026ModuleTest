@@ -1,0 +1,14 @@
+{
+	"name": "LS_AZURE_SQL",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"server": "adfsqlbootcamp2026.database.windows.net",
+			"database": "ADF_Bootcamp_DB_2026",
+			"encrypt": "mandatory",
+			"trustServerCertificate": false,
+			"authenticationType": "SystemAssignedManagedIdentity"
+		}
+	}
+}
