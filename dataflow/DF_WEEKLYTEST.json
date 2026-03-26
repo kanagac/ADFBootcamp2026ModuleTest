@@ -17,31 +17,39 @@
 						"type": "DatasetReference"
 					},
 					"name": "STGPRODUCTS"
-				},
-				{
-					"dataset": {
-						"referenceName": "AzureSqlTable1",
-						"type": "DatasetReference"
-					},
-					"name": "STGORDERS"
-				},
-				{
-					"dataset": {
-						"referenceName": "AzureSqlTable1",
-						"type": "DatasetReference"
-					},
-					"name": "STGPAYMENTS"
-				},
-				{
-					"dataset": {
-						"referenceName": "AzureSqlTable1",
-						"type": "DatasetReference"
-					},
-					"name": "STGORDERSITEMS"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_WEEKLYTEST",
+						"type": "LinkedServiceReference"
+					}
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "derivedColumn2"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
 				"          customer_id as string,",
@@ -55,48 +63,45 @@
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> STGCUSTOMER",
 				"source(output(",
-				"          customer_id as string,",
-				"          customer_name as string,",
-				"          email as string,",
-				"          country as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> STGPRODUCTS",
-				"source(output(",
-				"          order_id as string,",
-				"          customer_id as string,",
-				"          order_date as string,",
-				"          order_status as string,",
-				"          order_amount as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> STGORDERS",
-				"source(output(",
-				"          payment_id as string,",
-				"          order_id as string,",
-				"          payment_mode as string,",
-				"          payment_status as string,",
-				"          payment_date as string",
-				"     ),",
-				"     allowSchemaDrift: true,",
-				"     validateSchema: false,",
-				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> STGPAYMENTS",
-				"source(output(",
-				"          order_item_id as string,",
-				"          order_id as string,",
 				"          product_id as string,",
-				"          quantity as string,",
-				"          item_amount as string",
+				"          product_name as string,",
+				"          category as string,",
+				"          unit_price as integer",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> STGORDERSITEMS"
+				"     format: 'table',",
+				"     partitionBy('hash', 1)) ~> STGPRODUCTS",
+				"STGCUSTOMER derive(contact = concat(customer_name,'-',email),",
+				"          Continent = 'asia',",
+				"          country = 'india',",
+				"          dw_created_at = currentDate()) ~> derivedColumn1",
+				"derivedColumn1 alterRow(upsertIf(true())) ~> alterRow1",
+				"STGPRODUCTS derive(dw_created_at = currentDate(),",
+				"     partitionBy('hash', 1)) ~> derivedColumn2",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:false,",
+				"     upsertable:true,",
+				"     keys:['customer_id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     partitionBy('hash', 1)) ~> sink1",
+				"derivedColumn2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
 			]
 		}
 	}
