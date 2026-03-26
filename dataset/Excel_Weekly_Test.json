@@ -1,0 +1,27 @@
+{
+	"name": "Excel_Weekly_Test",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Weekly_Test",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"table": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().table",
+					"type": "Expression"
+				},
+				"container": "weekly-test-dataset"
+			}
+		},
+		"schema": []
+	}
+}
