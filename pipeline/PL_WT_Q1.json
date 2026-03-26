@@ -1,0 +1,46 @@
+{
+	"name": "PL_WT_Q1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_SCD1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"SRC": {
+								"table_name": "STG_CUSTOMER_IN1733"
+							},
+							"TGT": {
+								"table_name": "DIM_CUSTOMER_IN1733"
+							},
+							"sink1": {
+								"table_name": "DIM_CUSTOMER_IN1733"
+							},
+							"sink2": {
+								"table_name": "DIM_CUSTOMER_IN1733"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
