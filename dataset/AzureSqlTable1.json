@@ -14,7 +14,7 @@
 		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
-			"schema": "",
+			"schema": "dbo",
 			"table": "DIM_CUSTOMER_IN1722"
 		}
 	}
