@@ -27,6 +27,9 @@
 				},
 				{
 					"name": "alterRow1"
+				},
+				{
+					"name": "derivedColumn2"
 				}
 			],
 			"scriptLines": [
@@ -42,7 +45,9 @@
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> STGCustomers",
 				"STGCustomers derive(contact = concat(customer_name,'-', email)) ~> derivedColumn1",
-				"derivedColumn1 alterRow(upsertIf(1==1)) ~> alterRow1",
+				"derivedColumn2 alterRow(upsertIf(1==1)) ~> alterRow1",
+				"derivedColumn1 derive(Continent = ERROR_FUNCTION('case (__NEW_LINE_R____NEW_LINE_N__    country=__SINGLE_QUOTE__Australia__SINGLE_QUOTE__, __SINGLE_QUOTE__Australia__SINGLE_QUOTE____NEW_LINE_R____NEW_LINE_N__    country=__SINGLE_QUOTE__India__SINGLE_QUOTE__, __SINGLE_QUOTE__Asia__SINGLE_QUOTE____NEW_LINE_R____NEW_LINE_N__    country in(__SINGLE_QUOTE__United Kingdom__SINGLE_QUOTE__,__SINGLE_QUOTE__Germany__SINGLE_QUOTE__) ,__SINGLE_QUOTE__Europe__SINGLE_QUOTE____NEW_LINE_R____NEW_LINE_N__    country in(__SINGLE_QUOTE__Canada__SINGLE_QUOTE__,__SINGLE_QUOTE__United States__SINGLE_QUOTE__) , __SINGLE_QUOTE__North America__SINGLE_QUOTE____NEW_LINE_R____NEW_LINE_N__)__NEW_LINE_R____NEW_LINE_N__'),",
+				"          dw_created_at = currentDate()) ~> derivedColumn2",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
