@@ -1,7 +1,7 @@
 {
 	"name": "LS_AzureBlob_IN1734",
 	"properties": {
-		"description": "Linked Service for Weekly Test",
+		"description": "Linked Service for Weekly Test.",
 		"annotations": [],
 		"type": "AzureBlobStorage",
 		"typeProperties": {
