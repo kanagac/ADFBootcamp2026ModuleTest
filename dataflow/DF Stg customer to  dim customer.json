@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "DF Stg customer to  dim customer",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
