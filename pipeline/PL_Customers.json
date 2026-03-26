@@ -1,0 +1,9 @@
+{
+	"name": "PL_Customers",
+	"properties": {
+		"folder": {
+			"name": "WeeklyTest"
+		},
+		"annotations": []
+	}
+}
