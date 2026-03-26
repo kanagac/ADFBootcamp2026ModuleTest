@@ -28,7 +28,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"on": {
-									"value": "@item().itemName",
+									"value": "iif(@item().itemName == 'Australia', 'Australia',\niif(@item().itemName == 'India', 'Asia',\niif(@item().itemName in ('United Kingdom','Germany'), 'Europe',\niif(@item().itemName in ('Canada','United States'), 'North America', null))))",
 									"type": "Expression"
 								},
 								"cases": [
