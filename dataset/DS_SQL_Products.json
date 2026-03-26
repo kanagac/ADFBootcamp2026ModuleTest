@@ -10,7 +10,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "STG_PRODUCTS_IN1734"
+			"table": "STG_Products_IN1734"
 		}
 	}
 }
