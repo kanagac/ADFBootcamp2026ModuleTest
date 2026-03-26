@@ -1,0 +1,150 @@
+{
+	"name": "DF_CUSTOMER_STG_TO_TGT",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_AzureSqlTable",
+						"type": "DatasetReference"
+					},
+					"name": "SourceCustomer"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_AzureSqlTable",
+						"type": "DatasetReference"
+					},
+					"name": "TargetCustomer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_AzureSqlTable",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_AzureSqlTable",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "LeftJoin"
+				},
+				{
+					"name": "Transformation"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "alterRow"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as string,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> SourceCustomer",
+				"source(output(",
+				"          customer_id as string,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          contact as string,",
+				"          Continent as string,",
+				"          country as string,",
+				"          created_date as timestamp,",
+				"          dw_created_at as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> TargetCustomer",
+				"SourceCustomer, TargetCustomer join(SourceCustomer@customer_id == TargetCustomer@customer_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> LeftJoin",
+				"LeftJoin derive(contact = concat(SourceCustomer@customer_name, '-', SourceCustomer@email),",
+				"          Continent = case(\r",
+				"    SourceCustomer@country == 'India', 'Asia', \r",
+				"    SourceCustomer@country == 'United Kingdom', 'Europe',\r",
+				"    SourceCustomer@country == 'Germany', 'Europe',\r",
+				"    SourceCustomer@country == 'Canada', 'North America',\r",
+				"    SourceCustomer@country == 'United States', 'North America',\r",
+				"    SourceCustomer@country\r",
+				") \r",
+				"\r",
+				",",
+				"          dw_created_at = currentDate(),",
+				"          country = case(\r",
+				"    SourceCustomer@country == 'USA', 'United States of America', \r",
+				"    SourceCustomer@country == 'UK', 'United Kingdom',\r",
+				"    SourceCustomer@country\r",
+				") \r",
+				",",
+				"          created_date = currentDate()) ~> Transformation",
+				"Transformation split(isNull(TargetCustomer@customer_id),",
+				"     !isNull(TargetCustomer@customer_id) && (SourceCustomer@email != TargetCustomer@email),",
+				"     disjoint: false) ~> split1@(insert, update)",
+				"split1@update alterRow(updateIf(true())) ~> alterRow",
+				"split1@insert sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id = split1@insert@customer_id,",
+				"          customer_name = split1@insert@customer_name,",
+				"          email = split1@insert@email,",
+				"          contact,",
+				"          Continent,",
+				"          country,",
+				"          created_date,",
+				"          dw_created_at",
+				"     )) ~> sink1",
+				"alterRow sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['customer_id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id = split1@update@customer_id,",
+				"          customer_name = split1@update@customer_name,",
+				"          email = split1@update@email,",
+				"          contact,",
+				"          Continent,",
+				"          country,",
+				"          created_date,",
+				"          dw_created_at",
+				"     )) ~> sink2"
+			]
+		}
+	}
+}
