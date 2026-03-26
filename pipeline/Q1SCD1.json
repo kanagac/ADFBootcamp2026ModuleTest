@@ -1,0 +1,46 @@
+{
+	"name": "Q1SCD1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Q1SCD1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "Q1SCD1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source1": {
+								"tablename": "STG_CUSTOMERS_IN1738"
+							},
+							"target1": {
+								"tablename": "DIM_CUSTOMERS_IN1738"
+							},
+							"sink1": {
+								"tablename": "DIM_CUSTOMERS_IN1738"
+							},
+							"sink2": {
+								"tablename": "DIM_CUSTOMERS_IN1738"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
