@@ -2,14 +2,11 @@
 	"name": "Excel1",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "LS_xlsheet",
+			"referenceName": "HttpServer1",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
 			"Container": {
-				"type": "String"
-			},
-			"Directory": {
 				"type": "String"
 			},
 			"file": {
@@ -20,19 +17,8 @@
 		"type": "Excel",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobStorageLocation",
-				"fileName": {
-					"value": "@dataset().file",
-					"type": "Expression"
-				},
-				"folderPath": {
-					"value": "@dataset().Directory",
-					"type": "Expression"
-				},
-				"container": {
-					"value": "@dataset().Container",
-					"type": "Expression"
-				}
+				"type": "HttpServerLocation",
+				"relativeUrl": "ADF_WeeklyTest_Database_Records_v1.xlsx"
 			}
 		},
 		"schema": []
