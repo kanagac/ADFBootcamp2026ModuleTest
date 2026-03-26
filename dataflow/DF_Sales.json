@@ -1,0 +1,81 @@
+{
+	"name": "DF_Sales",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_Sink_SQL_Tables",
+						"type": "DatasetReference"
+					},
+					"name": "dimProducts"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Sink_SQL_Tables",
+						"type": "DatasetReference"
+					},
+					"name": "dimcustomers"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Orders",
+						"type": "DatasetReference"
+					},
+					"name": "dimorders"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_Payments",
+						"type": "DatasetReference"
+					},
+					"name": "dimpayments"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "join1"
+				}
+			],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> dimProducts",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> dimcustomers",
+				"source(output(",
+				"          order_id as integer,",
+				"          customer_id as integer,",
+				"          order_date as date,",
+				"          order_status as string,",
+				"          order_amount as integer",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> dimorders",
+				"source(output(",
+				"          payment_id as integer,",
+				"          order_id as integer,",
+				"          payment_mode as string,",
+				"          payment_status as string,",
+				"          payment_date as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> dimpayments",
+				"dimProducts, dimorders join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1"
+			]
+		}
+	}
+}
