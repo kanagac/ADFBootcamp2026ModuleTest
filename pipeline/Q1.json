@@ -30,6 +30,9 @@
 							},
 							"New": {
 								"tablename": "DIM_CUSTOMER_IN1742"
+							},
+							"sink1": {
+								"tablename": "DIM_CUSTOMER_IN1742"
 							}
 						}
 					},
