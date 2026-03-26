@@ -1,0 +1,55 @@
+{
+	"name": "PL_TG_Customers",
+	"properties": {
+		"activities": [
+			{
+				"name": "Customers",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Customers",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"STGCustomers": {
+								"TableName": "STG_CUSTOMERS_IN1734"
+							},
+							"DIMCustomer": {
+								"TableName": "DIM_CUSTOMER_IN1734"
+							}
+						},
+						"linkedServiceParameters": {
+							"STGCustomers": {
+								"schemaLinkedService": {
+									"TableName": "STG_CUSTOMERS_IN1734"
+								}
+							},
+							"DIMCustomer": {
+								"schemaLinkedService": {
+									"TableName": "DIM_CUSTOMER_IN1734"
+								}
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "WeeklyTest"
+		},
+		"annotations": []
+	}
+}
