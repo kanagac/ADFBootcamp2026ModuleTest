@@ -1,9 +1,9 @@
 {
-	"name": "PL_customers to STG_CUSTOMERS_IN1725",
+	"name": "PL_products to STG_PRODUCTS_IN1725",
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data from customers to STG_CUSTOMERS_IN1725",
+				"name": "Copy data from products to STG_PRODUCTS_IN1725_copy1",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -34,62 +34,52 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "customer_id",
+									"name": "product_id",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "customer_id",
+									"name": "product_id",
 									"type": "Int32",
 									"physicalType": "int"
 								}
 							},
 							{
 								"source": {
-									"name": "customer_name",
+									"name": "product_name",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "customer_name",
+									"name": "product_name",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "email",
+									"name": "category",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "email",
+									"name": "category",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "country",
+									"name": "unit_price",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "country",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "created_date",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "created_date",
-									"type": "DateTime",
-									"physicalType": "datetime"
+									"name": "unit_price",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
 								}
 							}
 						],
@@ -105,7 +95,7 @@
 						"referenceName": "DS_EXCEL",
 						"type": "DatasetReference",
 						"parameters": {
-							"sheetname": "customers"
+							"sheetname": "products"
 						}
 					}
 				],
@@ -114,7 +104,7 @@
 						"referenceName": "DS_SQL_DB",
 						"type": "DatasetReference",
 						"parameters": {
-							"Tablename": "STG_CUSTOMERS_IN1725"
+							"Tablename": "STG_PRODUCTS_IN1725"
 						}
 					}
 				]

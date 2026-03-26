@@ -1,9 +1,9 @@
 {
-	"name": "PL_customers to STG_CUSTOMERS_IN1725",
+	"name": "PL_order_items to ORDER_ITEMS_IN1725",
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data from customers to STG_CUSTOMERS_IN1725",
+				"name": "Copy data order_items to ORDER_ITEMS_IN1725",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -34,62 +34,64 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "customer_id",
+									"name": "order_item_id",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "customer_id",
+									"name": "order_item_id",
 									"type": "Int32",
 									"physicalType": "int"
 								}
 							},
 							{
 								"source": {
-									"name": "customer_name",
+									"name": "order_id",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "customer_name",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "order_id",
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
 								"source": {
-									"name": "email",
+									"name": "product_id",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "email",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "product_id",
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
 								"source": {
-									"name": "country",
+									"name": "quantity",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "country",
-									"type": "String",
-									"physicalType": "varchar"
+									"name": "quantity",
+									"type": "Int32",
+									"physicalType": "int"
 								}
 							},
 							{
 								"source": {
-									"name": "created_date",
+									"name": "item_amount",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "created_date",
-									"type": "DateTime",
-									"physicalType": "datetime"
+									"name": "item_amount",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 0,
+									"precision": 18
 								}
 							}
 						],
@@ -105,7 +107,7 @@
 						"referenceName": "DS_EXCEL",
 						"type": "DatasetReference",
 						"parameters": {
-							"sheetname": "customers"
+							"sheetname": "order_items"
 						}
 					}
 				],
@@ -114,7 +116,7 @@
 						"referenceName": "DS_SQL_DB",
 						"type": "DatasetReference",
 						"parameters": {
-							"Tablename": "STG_CUSTOMERS_IN1725"
+							"Tablename": "ORDER_ITEMS_IN1725"
 						}
 					}
 				]

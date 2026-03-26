@@ -1,9 +1,9 @@
 {
-	"name": "PL_customers to STG_CUSTOMERS_IN1725",
+	"name": "PL_payments to STG_PAYMENTS_IN1725",
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data from customers to STG_CUSTOMERS_IN1725",
+				"name": "Copy data PL_payments to STG_PAYMENTS_IN1725",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -34,62 +34,62 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "customer_id",
+									"name": "payment_id",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "customer_id",
+									"name": "payment_id",
 									"type": "Int32",
 									"physicalType": "int"
 								}
 							},
 							{
 								"source": {
-									"name": "customer_name",
+									"name": "order_id",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "customer_name",
+									"name": "order_id",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "payment_mode",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "payment_mode",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "email",
+									"name": "payment_status",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "email",
+									"name": "payment_status",
 									"type": "String",
 									"physicalType": "varchar"
 								}
 							},
 							{
 								"source": {
-									"name": "country",
+									"name": "payment_date",
 									"type": "String",
 									"physicalType": "String"
 								},
 								"sink": {
-									"name": "country",
-									"type": "String",
-									"physicalType": "varchar"
-								}
-							},
-							{
-								"source": {
-									"name": "created_date",
-									"type": "String",
-									"physicalType": "String"
-								},
-								"sink": {
-									"name": "created_date",
-									"type": "DateTime",
-									"physicalType": "datetime"
+									"name": "payment_date",
+									"type": "Date",
+									"physicalType": "date"
 								}
 							}
 						],
@@ -105,7 +105,7 @@
 						"referenceName": "DS_EXCEL",
 						"type": "DatasetReference",
 						"parameters": {
-							"sheetname": "customers"
+							"sheetname": "payments"
 						}
 					}
 				],
@@ -114,7 +114,7 @@
 						"referenceName": "DS_SQL_DB",
 						"type": "DatasetReference",
 						"parameters": {
-							"Tablename": "STG_CUSTOMERS_IN1725"
+							"Tablename": "STG_PAYMENTS_IN1725"
 						}
 					}
 				]
