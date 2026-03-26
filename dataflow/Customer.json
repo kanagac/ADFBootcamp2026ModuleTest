@@ -25,14 +25,14 @@
 						"referenceName": "DS_sql_common",
 						"type": "DatasetReference"
 					},
-					"name": "sink1"
+					"name": "Updated"
 				},
 				{
 					"dataset": {
 						"referenceName": "DS_sql_common",
 						"type": "DatasetReference"
 					},
-					"name": "sink2"
+					"name": "New"
 				}
 			],
 			"transformations": [
@@ -43,10 +43,10 @@
 					"name": "split1"
 				},
 				{
-					"name": "alterRow1"
+					"name": "upsert"
 				},
 				{
-					"name": "derivedColumn1"
+					"name": "Transformations"
 				}
 			],
 			"scriptLines": [
@@ -65,20 +65,20 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> Target",
-				"derivedColumn1, Target join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"Transformations, Target join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
 				"     joinType:'left',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
 				"     broadcast: 'auto')~> SyncSources",
 				"SyncSources split(ERROR_FUNCTION('ISNULL(@email)'),",
 				"     disjoint: false) ~> split1@(FindIfNull, ToUpdate)",
-				"split1@ToUpdate alterRow(updateIf(true())) ~> alterRow1",
+				"split1@ToUpdate alterRow(updateIf(true())) ~> upsert",
 				"source derive(Contact = concat(customer_name +'-' + email),",
 				"          Continent = ERROR_FUNCTION('iif(country == __SINGLE_QUOTE__Australia__SINGLE_QUOTE__, __SINGLE_QUOTE__Australia__SINGLE_QUOTE__,__NEW_LINE_R____NEW_LINE_N__iif(country == __SINGLE_QUOTE__India__SINGLE_QUOTE__, __SINGLE_QUOTE__Asia__SINGLE_QUOTE__,__NEW_LINE_R____NEW_LINE_N__iif(country in (__SINGLE_QUOTE__United Kingdom__SINGLE_QUOTE__,__SINGLE_QUOTE__Germany__SINGLE_QUOTE__), __SINGLE_QUOTE__Europe__SINGLE_QUOTE__,__NEW_LINE_R____NEW_LINE_N__iif(country in (__SINGLE_QUOTE__Canada__SINGLE_QUOTE__,__SINGLE_QUOTE__United States__SINGLE_QUOTE__), __SINGLE_QUOTE__North America__SINGLE_QUOTE__, null))))'),",
 				"          country = iif(country == 'USA', 'United States of America', iif(country == 'UK', 'United Kingdom', country)),",
 				"          dw_created_at = currentTimestamp(),",
-				"          each(match(), ERROR_FUNCTION('') = ERROR_FUNCTION(''))) ~> derivedColumn1",
-				"alterRow1 sink(allowSchemaDrift: true,",
+				"          each(match(true()), ERROR_FUNCTION('') = ERROR_FUNCTION('iif(isNull(0)'))) ~> Transformations",
+				"upsert sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
 				"     insertable:true,",
@@ -87,7 +87,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink1",
+				"     errorHandlingOption: 'stopOnFirstError') ~> Updated",
 				"split1@FindIfNull sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     deletable:false,",
@@ -97,7 +97,7 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+				"     errorHandlingOption: 'stopOnFirstError') ~> New"
 			]
 		}
 	}
