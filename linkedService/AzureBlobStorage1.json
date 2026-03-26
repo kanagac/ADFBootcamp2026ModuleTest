@@ -5,7 +5,7 @@
 		"type": "AzureBlobStorage",
 		"typeProperties": {
 			"serviceEndpoint": "https://adfbootcampsa2026.blob.core.windows.net/",
-			"accountKind": "BlobStorage"
+			"accountKind": "StorageV2"
 		}
 	}
 }
