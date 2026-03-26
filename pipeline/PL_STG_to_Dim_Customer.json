@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Data flow1",
+				"name": "STG TO TGT",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
