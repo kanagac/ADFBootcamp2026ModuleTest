@@ -1,0 +1,11 @@
+{
+	"name": "LS_Weekly_Test",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"containerUri": "https://adfbootcampsa2026.blob.core.windows.net/weekly-test-dataset",
+			"authenticationType": "Anonymous"
+		}
+	}
+}
