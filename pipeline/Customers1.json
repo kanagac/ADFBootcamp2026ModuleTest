@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Customers1",
+				"name": "Customers",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -26,6 +26,12 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
+						"additionalColumns": [
+							{
+								"name": "Customer",
+								"value": "$$COLUMN:"
+							}
+						],
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -33,6 +39,7 @@
 						"type": "AzureSqlSink",
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
 						"disableMetricsCollection": false
 					},
 					"enableStaging": false,
@@ -50,7 +57,7 @@
 						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference",
 						"parameters": {
-							"DIM_CUSTOMER_IN1722": " "
+							"customers": "Customers"
 						}
 					}
 				],
@@ -59,12 +66,17 @@
 						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference",
 						"parameters": {
-							"DIM_CUSTOMER_IN1722": " "
+							"customers": "Dim_Customer_IN1722"
 						}
 					}
 				]
 			}
 		],
+		"variables": {
+			"Customers": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
