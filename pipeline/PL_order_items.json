@@ -1,9 +1,9 @@
 {
-	"name": "PL_customer",
+	"name": "PL_order_items",
 	"properties": {
 		"activities": [
 			{
-				"name": "CD_customer",
+				"name": "CD_order_items",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -45,7 +45,7 @@
 						"referenceName": "DS_Excel1",
 						"type": "DatasetReference",
 						"parameters": {
-							"name": "customers"
+							"name": "order_items"
 						}
 					}
 				],
@@ -54,7 +54,7 @@
 						"referenceName": "DS_SQLDB",
 						"type": "DatasetReference",
 						"parameters": {
-							"tab_name": "stg_customers_IN1726"
+							"tab_name": "stg_order_items_IN1726"
 						}
 					}
 				]

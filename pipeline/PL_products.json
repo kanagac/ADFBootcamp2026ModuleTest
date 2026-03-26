@@ -1,9 +1,9 @@
 {
-	"name": "PL_customer",
+	"name": "PL_products",
 	"properties": {
 		"activities": [
 			{
-				"name": "CD_customer",
+				"name": "CD_products",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -26,9 +26,7 @@
 					"sink": {
 						"type": "AzureSqlSink",
 						"writeBehavior": "insert",
-						"sqlWriterUseTableLock": false,
-						"tableOption": "autoCreate",
-						"disableMetricsCollection": false
+						"sqlWriterUseTableLock": false
 					},
 					"enableStaging": false,
 					"translator": {
@@ -45,7 +43,7 @@
 						"referenceName": "DS_Excel1",
 						"type": "DatasetReference",
 						"parameters": {
-							"name": "customers"
+							"name": "products"
 						}
 					}
 				],
@@ -54,7 +52,7 @@
 						"referenceName": "DS_SQLDB",
 						"type": "DatasetReference",
 						"parameters": {
-							"tab_name": "stg_customers_IN1726"
+							"tab_name": "stg_products_IN1726"
 						}
 					}
 				]
