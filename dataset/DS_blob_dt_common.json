@@ -1,5 +1,5 @@
 {
-	"name": "DelimitedText1",
+	"name": "DS_blob_dt_common",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_AZURE_BLOB_week",
