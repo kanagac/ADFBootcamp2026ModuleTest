@@ -1,5 +1,5 @@
 {
-	"name": "DS_SQL_Customers",
+	"name": "DS_Sink_SQL_Tables",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "LS_SQL_IN1734",
