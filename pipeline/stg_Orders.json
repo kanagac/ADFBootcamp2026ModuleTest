@@ -1,0 +1,73 @@
+{
+	"name": "stg_Orders",
+	"properties": {
+		"activities": [
+			{
+				"name": "STG_ORDERS",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_blob_dt_common",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "input",
+							"directory": "Module_IN1742",
+							"filename": "Orders.csv"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_sql_common",
+						"type": "DatasetReference",
+						"parameters": {
+							"tablename": "STG_ORDERS_IN1742"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "STAGE"
+		},
+		"annotations": []
+	}
+}
