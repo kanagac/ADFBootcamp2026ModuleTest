@@ -4,8 +4,8 @@
 		"annotations": [],
 		"type": "AzureBlobStorage",
 		"typeProperties": {
-			"serviceEndpoint": "https://adfbootcampsa2026.blob.core.windows.net/",
-			"accountKind": "Storage"
+			"containerUri": "https://adfbootcampsa2026.blob.core.windows.net/weekly-test-dataset",
+			"authenticationType": "Anonymous"
 		}
 	}
 }
