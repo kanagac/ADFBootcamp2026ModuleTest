@@ -59,7 +59,7 @@
 						"referenceName": "DS_sql_common",
 						"type": "DatasetReference",
 						"parameters": {
-							"tablename": "STG_ORDER_ITEMS.CSV"
+							"tablename": "STG_ORDER_ITEMS_IN1742"
 						}
 					}
 				]
