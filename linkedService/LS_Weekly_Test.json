@@ -1,11 +1,6 @@
 {
 	"name": "LS_Weekly_Test",
 	"properties": {
-		"parameters": {
-			"table": {
-				"type": "string"
-			}
-		},
 		"annotations": [],
 		"type": "AzureBlobStorage",
 		"typeProperties": {
