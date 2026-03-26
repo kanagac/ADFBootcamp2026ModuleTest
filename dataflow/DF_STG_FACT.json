@@ -1,0 +1,116 @@
+{
+	"name": "DF_STG_FACT",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_DB",
+						"type": "DatasetReference"
+					},
+					"name": "orderitems"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_DB",
+						"type": "DatasetReference"
+					},
+					"name": "products"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_DB",
+						"type": "DatasetReference"
+					},
+					"name": "orders"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_DB",
+						"type": "DatasetReference"
+					},
+					"name": "payments"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "Orderitemjoinproducts"
+				},
+				{
+					"name": "joinwithorderid"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          order_item_id as integer,",
+				"          order_id as integer,",
+				"          product_id as integer,",
+				"          quantity as integer,",
+				"          item_amount as decimal(18,0)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> orderitems",
+				"source(output(",
+				"          product_id as integer,",
+				"          product_name as string,",
+				"          category as string,",
+				"          unit_price as integer,",
+				"          dw_created_at as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> products",
+				"source(output(",
+				"          order_id as integer,",
+				"          customer_id as integer,",
+				"          order_date as date,",
+				"          order_status as string,",
+				"          order_amount as decimal(18,0)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> orders",
+				"source(output(",
+				"          payment_id as integer,",
+				"          order_id as integer,",
+				"          payment_mode as string,",
+				"          payment_status as string,",
+				"          payment_date as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> payments",
+				"orderitems, products join(orderitems@product_id == products@product_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> Orderitemjoinproducts",
+				"Orderitemjoinproducts, orders join(orderitems@order_id == orders@order_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> joinwithorderid",
+				"joinwithorderid, payments join(orderitems@order_id == payments@order_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"join1 derive(column1 = ERROR_FUNCTION(''),",
+				"          each(match(type=='string'), $$ = iffNull($$,'UNKNOWN'))) ~> derivedColumn1"
+			]
+		}
+	}
+}
