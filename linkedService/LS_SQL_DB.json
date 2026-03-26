@@ -6,8 +6,8 @@
 		"typeProperties": {
 			"server": "adfsqlbootcamp2026.database.windows.net",
 			"database": "ADF_Bootcamp_DB_2026",
-			"encrypt": "mandatory",
-			"trustServerCertificate": false,
+			"encrypt": "optional",
+			"trustServerCertificate": true,
 			"authenticationType": "SystemAssignedManagedIdentity"
 		}
 	}
