@@ -1,0 +1,174 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_DB",
+						"type": "DatasetReference"
+					},
+					"name": "source"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_DB",
+						"type": "DatasetReference"
+					},
+					"name": "target"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_DB",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_DB",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "join1"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "transformation"
+				},
+				{
+					"name": "nullhandling"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "alterRow1"
+				},
+				{
+					"name": "select3"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> source",
+				"source(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          contact as string,",
+				"          Continent as string,",
+				"          country as string,",
+				"          created_date as date,",
+				"          dw_created_at as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> target",
+				"source, select1 join(customer_id == dim_customer_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"nullhandling split(isNull(dim_customer_id),",
+				"     customer_name!=dim_customer_name||email!=dim_email||country!=dim_country,",
+				"     disjoint: false) ~> split1@(insert, update)",
+				"join1 derive(dim_contact = concat(customer_name,'-',email),",
+				"          dw_created_at = currentUTC()) ~> transformation",
+				"transformation derive(each(match(type=='string'), $$ = iifNull($$,'UNKNOWN')),",
+				"          each(match(type=='date'), $$ = iifNull($$,toDate('1900-01-01')))) ~> nullhandling",
+				"target select(mapColumn(",
+				"          dim_customer_id = customer_id,",
+				"          dim_customer_name = customer_name,",
+				"          dim_email = email,",
+				"          dim_contact = contact,",
+				"          dim_Continent = Continent,",
+				"          dim_country = country,",
+				"          dim_created_date = created_date,",
+				"          dim_dw_created_at = dw_created_at",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"split1@insert select(mapColumn(",
+				"          customer_id,",
+				"          customer_name,",
+				"          email,",
+				"          country,",
+				"          created_date,",
+				"          contact = dim_contact,",
+				"          Continent = dim_Continent,",
+				"          dw_created_at",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"split1@update alterRow(updateIf(true())) ~> alterRow1",
+				"alterRow1 select(mapColumn(",
+				"          customer_id,",
+				"          customer_name,",
+				"          email,",
+				"          country,",
+				"          created_date,",
+				"          contact = dim_contact,",
+				"          Continent = dim_Continent,",
+				"          country = dim_country,",
+				"          dw_created_at",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"select2 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id,",
+				"          customer_name,",
+				"          email,",
+				"          country,",
+				"          created_date,",
+				"          contact,",
+				"          Continent,",
+				"          dw_created_at",
+				"     )) ~> sink1",
+				"select3 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['customer_id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+			]
+		}
+	}
+}
