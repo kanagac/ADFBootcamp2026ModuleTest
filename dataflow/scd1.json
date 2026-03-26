@@ -42,7 +42,7 @@
 				"     broadcast: 'auto')~> join1",
 				"join1 split(ERROR_FUNCTION(''),",
 				"     disjoint: false) ~> split1@(Input, Default)",
-				"split1@Default alterRow() ~> alterRow1",
+				"split1@Default alterRow(updateIf(true())) ~> alterRow1",
 				"alterRow1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     skipDuplicateMapInputs: true,",
