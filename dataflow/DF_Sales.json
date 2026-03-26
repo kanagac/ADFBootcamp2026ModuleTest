@@ -31,12 +31,31 @@
 						"type": "DatasetReference"
 					},
 					"name": "dimpayments"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_Order_Items",
+						"type": "DatasetReference"
+					},
+					"name": "OrderItem"
 				}
 			],
 			"sinks": [],
 			"transformations": [
 				{
 					"name": "join1"
+				},
+				{
+					"name": "join2"
+				},
+				{
+					"name": "join3"
+				},
+				{
+					"name": "join4"
+				},
+				{
+					"name": "filter1"
 				}
 			],
 			"scriptLines": [
@@ -44,7 +63,17 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> dimProducts",
-				"source(allowSchemaDrift: true,",
+				"source(output(",
+				"          customer_id as integer,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          contact as string,",
+				"          Continent as string,",
+				"          country as string,",
+				"          created_date as timestamp,",
+				"          dw_created_at as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> dimcustomers",
@@ -70,11 +99,30 @@
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
 				"     format: 'table') ~> dimpayments",
-				"dimProducts, dimorders join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> OrderItem",
+				"dimProducts, OrderItem join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join1"
+				"     broadcast: 'auto')~> join1",
+				"dimcustomers, dimorders join(dimcustomers@customer_id == dimorders@customer_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"dimpayments, dimorders join(dimpayments@order_id == dimorders@order_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join3",
+				"OrderItem, dimorders join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join4",
+				"dimorders filter(iif(order_status=='Shipped'&&order_status=='Delivered')) ~> filter1"
 			]
 		}
 	}
