@@ -1,0 +1,43 @@
+{
+	"name": "PL_TRUNCATE_AND_LOAD_IN1735",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow for truncate and load",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_TRUNCATE_LOAD",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"sourceProducts": {
+								"TableName": "STG_PRODUCTS_IN1735"
+							},
+							"TargetProducts": {
+								"TableName": "DIM_PRODUCTS_IN1735"
+							},
+							"sink1": {
+								"TableName": "DIM_PRODUCTS_IN1735"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
