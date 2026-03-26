@@ -1,0 +1,289 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "DIMCUSTOMERS"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "DIMPRODUCTS"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "STGORDERS"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "STGPAYMENTS"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "ORDERITEMS"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_WEEKLYTEST",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "surrogateKey1"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "join2"
+				},
+				{
+					"name": "join3"
+				},
+				{
+					"name": "select1"
+				},
+				{
+					"name": "select2"
+				},
+				{
+					"name": "select3"
+				},
+				{
+					"name": "join4"
+				},
+				{
+					"name": "select4"
+				},
+				{
+					"name": "join5"
+				},
+				{
+					"name": "join6"
+				},
+				{
+					"name": "join7"
+				},
+				{
+					"name": "select5"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          customer_id as string,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as string,",
+				"          contact as string,",
+				"          Continent as string,",
+				"          dw_created_at as date",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> DIMCUSTOMERS",
+				"source(output(",
+				"          product_id as string,",
+				"          product_name as string,",
+				"          category as string,",
+				"          unit_price as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> DIMPRODUCTS",
+				"source(output(",
+				"          order_id as string,",
+				"          customer_id as string,",
+				"          order_date as string,",
+				"          order_status as string,",
+				"          order_amount as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> STGORDERS",
+				"source(output(",
+				"          payment_id as string,",
+				"          order_id as string,",
+				"          payment_mode as string,",
+				"          payment_status as string,",
+				"          payment_date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> STGPAYMENTS",
+				"source(output(",
+				"          order_item_id as string,",
+				"          order_id as string,",
+				"          product_id as string,",
+				"          quantity as string,",
+				"          item_amount as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ORDERITEMS",
+				"DIMPRODUCTS keyGenerate(output(sales_id as long),",
+				"     startAt: 1L,",
+				"     stepValue: 1L) ~> surrogateKey1",
+				"surrogateKey1, ORDERITEMS join(DIMPRODUCTS@product_id == ORDERITEMS@product_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     partitionBy('hash', 1),",
+				"     broadcast: 'auto')~> join1",
+				"ORDERITEMS, STGORDERS join(ORDERITEMS@order_id == STGORDERS@order_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"STGPAYMENTS, ORDERITEMS join(STGPAYMENTS@order_id == ORDERITEMS@order_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join3",
+				"join1 select(mapColumn(",
+				"          product_id = DIMPRODUCTS@product_id,",
+				"          product_name,",
+				"          category,",
+				"          unit_price,",
+				"          sales_id,",
+				"          order_item_id,",
+				"          order_id,",
+				"          product_id = ORDERITEMS@product_id,",
+				"          quantity,",
+				"          item_amount",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"join2 select(mapColumn(",
+				"          order_item_id,",
+				"          order_id = ORDERITEMS@order_id,",
+				"          product_id,",
+				"          quantity,",
+				"          item_amount,",
+				"          order_id = STGORDERS@order_id,",
+				"          customer_id,",
+				"          order_date,",
+				"          order_status,",
+				"          order_amount",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select2",
+				"join3 select(mapColumn(",
+				"          payment_id,",
+				"          order_id = STGPAYMENTS@order_id,",
+				"          payment_mode,",
+				"          payment_status,",
+				"          payment_date,",
+				"          order_item_id,",
+				"          order_id = ORDERITEMS@order_id,",
+				"          product_id,",
+				"          quantity,",
+				"          item_amount",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select3",
+				"DIMCUSTOMERS, STGORDERS join(DIMCUSTOMERS@customer_id == STGORDERS@customer_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join4",
+				"join4 select(mapColumn(",
+				"          customer_id = DIMCUSTOMERS@customer_id,",
+				"          customer_name,",
+				"          email,",
+				"          country,",
+				"          created_date,",
+				"          contact,",
+				"          Continent,",
+				"          dw_created_at,",
+				"          order_id,",
+				"          customer_id = STGORDERS@customer_id,",
+				"          order_date,",
+				"          order_status,",
+				"          order_amount",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select4",
+				"select4, select1 join(select4@order_id == select1@order_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join5",
+				"select3, select2 join(select3@order_id == select2@order_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join6",
+				"join5, join6 join(select1@product_id == select3@product_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join7",
+				"join7 select(mapColumn(",
+				"          customer_name,",
+				"          email,",
+				"          country,",
+				"          contact,",
+				"          order_date = select4@order_date,",
+				"          order_status = select4@order_status,",
+				"          order_amount = select4@order_amount,",
+				"          product_name,",
+				"          category,",
+				"          unit_price,",
+				"          sales_id,",
+				"          payment_mode,",
+				"          payment_status,",
+				"          payment_date",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select5",
+				"select5 derive(dw_loaded_at = currentDate()) ~> derivedColumn1",
+				"derivedColumn1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     partitionBy('hash', 1)) ~> sink1"
+			]
+		}
+	}
+}

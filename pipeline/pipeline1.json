@@ -1,0 +1,52 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "dataflow1",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"DIMCUSTOMERS": {
+								"P_tablename": "DIM_CUSTOMERS_IN1720"
+							},
+							"DIMPRODUCTS": {
+								"P_tablename": "DIM_PRODUCTS_IN1720"
+							},
+							"STGORDERS": {
+								"P_tablename": "STG_ORDERS_IN1720"
+							},
+							"STGPAYMENTS": {
+								"P_tablename": "STG_PAYMENTS_IN1720"
+							},
+							"ORDERITEMS": {
+								"P_tablename": "ORDER_ITEMS_IN1720"
+							},
+							"sink1": {
+								"P_tablename": "FACT_SALES_IN1720"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
