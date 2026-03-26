@@ -6,7 +6,7 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"DIM_CUSTOMER_IN1722": {
+			"customers": {
 				"type": "string"
 			}
 		},
