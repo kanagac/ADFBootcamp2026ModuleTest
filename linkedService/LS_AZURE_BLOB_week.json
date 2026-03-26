@@ -1,0 +1,11 @@
+{
+	"name": "LS_AZURE_BLOB_week",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"serviceEndpoint": "https://adfbootcampsa2026.blob.core.windows.net/",
+			"accountKind": "StorageV2"
+		}
+	}
+}
