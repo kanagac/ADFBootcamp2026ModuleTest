@@ -1,0 +1,42 @@
+{
+	"name": "DS_Customers_Excel",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Azure_IN1734",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": "customers",
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "ADF_WeeklyTest_Database_Records_v1.xlsx",
+				"container": "weekly-test-dataset"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": [
+			{
+				"name": "Prop_0",
+				"type": "String"
+			},
+			{
+				"name": "Prop_1",
+				"type": "String"
+			},
+			{
+				"name": "Prop_2",
+				"type": "String"
+			},
+			{
+				"name": "Prop_3",
+				"type": "String"
+			},
+			{
+				"name": "Prop_4",
+				"type": "String"
+			}
+		]
+	}
+}
