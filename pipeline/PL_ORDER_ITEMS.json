@@ -1,0 +1,130 @@
+{
+	"name": "PL_ORDER_ITEMS",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "AzureSqlSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "order_item_id",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "order_item_id",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "order_id",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "order_id",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "product_id",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "product_id",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "quantity",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "quantity",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "item_amount",
+									"type": "String",
+									"physicalType": "String"
+								},
+								"sink": {
+									"name": "item_amount",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 3,
+									"precision": 10
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_Order_Items",
+						"type": "DatasetReference",
+						"parameters": {
+							"Container": "weekly-test-dataset",
+							"Directory": " ",
+							"FileName": "ADF_WeeklyTest_Database_Records_v1.xlsx",
+							"SheetName": "order_items"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SQL_Order_items",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "WeeklyTest"
+		},
+		"annotations": []
+	}
+}

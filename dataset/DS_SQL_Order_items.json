@@ -1,0 +1,16 @@
+{
+	"name": "DS_SQL_Order_items",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_IN1734",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ORDER_ITEMS_IN1734"
+		}
+	}
+}
