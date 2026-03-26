@@ -19,15 +19,43 @@
 					"name": "target1"
 				}
 			],
-			"sinks": [],
-			"transformations": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable1",
+						"type": "DatasetReference"
+					},
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "scdJoin"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "alterRow1"
+				}
+			],
 			"scriptLines": [
 				"source(output(",
-				"          customer_id as string,",
+				"          customer_id as integer,",
 				"          customer_name as string,",
 				"          email as string,",
 				"          country as string,",
-				"          created_date as string",
+				"          created_date as timestamp",
 				"     ),",
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
@@ -46,7 +74,68 @@
 				"     allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> target1"
+				"     format: 'table') ~> target1",
+				"source1, target1 join(source1@customer_id == target1@customer_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> scdJoin",
+				"scdJoin derive(contact = concat(source1@customer_name,'-', source1@email),",
+				"          country = case(source1@country=='USA','United States of America',source1@country=='UK','United Kingdom',source1@country),",
+				"          Continent = case(source1@country=='Australia','Australia',\r",
+				"case(source1@country=='India','Asia',\r",
+				"case(source1@country=='United Kingdom','Europe',\r",
+				"case(source1@country=='Germany', 'Europe', \r",
+				"case(source1@country=='Canada','North America',\r",
+				"case(source1@country=='United States', 'North America')\r",
+				")))))\r",
+				",",
+				"          dw_created_at = currentDate()) ~> derivedColumn1",
+				"derivedColumn1 split(isNull(target1@customer_id),",
+				"     !isNull(target1@customer_id) && source1@email!=target1@email,",
+				"     disjoint: false) ~> split1@(insert, update)",
+				"split1@update alterRow(updateIf(1==1)) ~> alterRow1",
+				"split1@insert sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id = split1@insert@customer_id,",
+				"          customer_name = split1@insert@customer_name,",
+				"          email = split1@insert@email,",
+				"          contact,",
+				"          Continent,",
+				"          country,",
+				"          created_date = split1@insert@created_date,",
+				"          dw_created_at",
+				"     )) ~> sink1",
+				"alterRow1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:false,",
+				"     keys:['customer_id'],",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id = split1@update@customer_id,",
+				"          customer_name = split1@update@customer_name,",
+				"          email = split1@update@email,",
+				"          contact,",
+				"          Continent,",
+				"          country,",
+				"          created_date = split1@update@created_date,",
+				"          dw_created_at",
+				"     )) ~> sink2"
 			]
 		}
 	}
