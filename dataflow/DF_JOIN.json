@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "DF_JOIN",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -9,47 +9,80 @@
 						"referenceName": "DS_SQL_WEEKLY_TEST",
 						"type": "DatasetReference"
 					},
-					"name": "source1"
+					"name": "SOURCEProducts"
 				},
 				{
 					"dataset": {
 						"referenceName": "DS_SQL_WEEKLY_TEST",
 						"type": "DatasetReference"
 					},
-					"name": "source2"
+					"name": "SORUCEOrders"
 				},
 				{
 					"dataset": {
 						"referenceName": "DS_SQL_WEEKLY_TEST",
 						"type": "DatasetReference"
 					},
-					"name": "source3"
+					"name": "SOURCEPayments"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_SQL_WEEKLY_TEST",
+						"type": "DatasetReference"
+					},
+					"name": "SinkFact"
+				},
+				{
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
-					"name": "join1"
+					"name": "InnerJoin"
+				},
+				{
+					"name": "Join"
 				}
 			],
 			"scriptLines": [
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source1",
+				"     format: 'table') ~> SOURCEProducts",
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source2",
+				"     format: 'table') ~> SORUCEOrders",
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     isolationLevel: 'READ_UNCOMMITTED',",
-				"     format: 'table') ~> source3",
-				"source1, source3 join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"     format: 'table') ~> SOURCEPayments",
+				"SOURCEProducts, SORUCEOrders join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
 				"     joinType:'inner',",
 				"     matchType:'exact',",
 				"     ignoreSpaces: false,",
-				"     broadcast: 'auto')~> join1"
+				"     broadcast: 'auto')~> InnerJoin",
+				"SOURCEPayments, SORUCEOrders join(ERROR_FUNCTION('') == ERROR_FUNCTION(''),",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> Join",
+				"InnerJoin sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     deletable:false,",
+				"     insertable:true,",
+				"     updateable:false,",
+				"     upsertable:false,",
+				"     format: 'table',",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     errorHandlingOption: 'stopOnFirstError') ~> SinkFact",
+				"Join sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
 			]
 		}
 	}
