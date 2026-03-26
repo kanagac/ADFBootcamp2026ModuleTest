@@ -3,32 +3,52 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Switch1",
-				"type": "Switch",
-				"dependsOn": [],
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get_name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
-					"cases": [
+					"items": {
+						"value": "@activity('Get_name').output.itemName",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
 						{
-							"value": "email"
-						},
-						{
-							"value": "Continent"
-						},
-						{
-							"value": "Country"
-						},
-						{
-							"value": "created_date"
+							"name": "segeregate_columns",
+							"type": "Switch",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"on": {
+									"value": "@item().itemName",
+									"type": "Expression"
+								},
+								"cases": [
+									{
+										"value": "email"
+									},
+									{
+										"value": "Continent"
+									},
+									{
+										"value": "Country"
+									},
+									{
+										"value": "created_date"
+									}
+								]
+							}
 						}
 					]
 				}
-			},
-			{
-				"name": "ForEach1",
-				"type": "ForEach",
-				"dependsOn": [],
-				"userProperties": []
 			},
 			{
 				"name": "Get_name",
@@ -45,9 +65,16 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "DS_blob_dt_common",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "input",
+							"directory": "Module_IN1742",
+							"filename": "Customers.csv"
+						}
 					},
-					"fieldList": [],
+					"fieldList": [
+						"itemName"
+					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
 						"enablePartitionDiscovery": false
