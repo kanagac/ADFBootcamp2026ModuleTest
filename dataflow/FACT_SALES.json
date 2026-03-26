@@ -1,0 +1,141 @@
+{
+	"name": "FACT_SALES",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_sql_common",
+						"type": "DatasetReference"
+					},
+					"name": "DIMPRODUCTS"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_sql_common",
+						"type": "DatasetReference"
+					},
+					"name": "CUSTOMER"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_sql_common",
+						"type": "DatasetReference"
+					},
+					"name": "ORDERS"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_sql_common",
+						"type": "DatasetReference"
+					},
+					"name": "PAYMENTS"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_sql_common",
+						"type": "DatasetReference"
+					},
+					"name": "ORDERITEMS"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "ToFilterTypeOfTransformation"
+				},
+				{
+					"name": "TransformationForPayments"
+				},
+				{
+					"name": "join1"
+				},
+				{
+					"name": "derivedColumn1"
+				},
+				{
+					"name": "join2"
+				},
+				{
+					"name": "join3"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          product_id as integer,",
+				"          product_name as string,",
+				"          category as string,",
+				"          unit_price as integer,",
+				"          Dw_create_at as timestamp",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> DIMPRODUCTS",
+				"source(output(",
+				"          customer_id as string,",
+				"          customer_name as string,",
+				"          email as string,",
+				"          country as string,",
+				"          created_date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> CUSTOMER",
+				"source(output(",
+				"          order_id as string,",
+				"          customer_id as string,",
+				"          order_date as string,",
+				"          order_status as string,",
+				"          order_amount as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ORDERS",
+				"source(output(",
+				"          payment_id as string,",
+				"          order_id as string,",
+				"          payment_mode as string,",
+				"          payment_status as string,",
+				"          payment_date as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> PAYMENTS",
+				"source(output(",
+				"          order_item_id as string,",
+				"          order_id as string,",
+				"          product_id as string,",
+				"          quantity as string,",
+				"          item_amount as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     isolationLevel: 'READ_UNCOMMITTED',",
+				"     format: 'table') ~> ORDERITEMS",
+				"ORDERS derive() ~> ToFilterTypeOfTransformation",
+				"PAYMENTS derive() ~> TransformationForPayments",
+				"derivedColumn1, ORDERITEMS join(derivedColumn1@product_id == ORDERITEMS@product_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join1",
+				"DIMPRODUCTS derive(product_id = toString(product_id)) ~> derivedColumn1",
+				"ToFilterTypeOfTransformation, ORDERITEMS join(ORDERS@order_id == ORDERITEMS@order_id,",
+				"     joinType:'left',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join2",
+				"TransformationForPayments, ORDERITEMS join(PAYMENTS@order_id == ORDERITEMS@order_id,",
+				"     joinType:'inner',",
+				"     matchType:'exact',",
+				"     ignoreSpaces: false,",
+				"     broadcast: 'auto')~> join3"
+			]
+		}
+	}
+}
