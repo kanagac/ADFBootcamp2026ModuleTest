@@ -1,0 +1,16 @@
+{
+	"name": "DS_SQL_Payments",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_SQL_IN1734",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "STG_PAYMENTS_IN1734"
+		}
+	}
+}
