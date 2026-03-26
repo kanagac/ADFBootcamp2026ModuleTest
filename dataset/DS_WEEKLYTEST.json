@@ -19,7 +19,7 @@
 			},
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": " ",
+				"fileName": "ADF_WeeklyTest_Database_Records_v1.xlsx",
 				"folderPath": " ",
 				"container": "weekly-test-dataset"
 			},
