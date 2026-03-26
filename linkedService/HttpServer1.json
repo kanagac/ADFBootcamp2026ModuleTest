@@ -1,0 +1,12 @@
+{
+	"name": "HttpServer1",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://systechus.sharepoint.com/:x:/s/Training682/IQAsJLV4E3szTIZN0aMXYOFIAQnblurJebXBaaaCh0kohH8?e=pG0roG",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
