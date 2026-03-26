@@ -1,0 +1,9 @@
+{
+	"name": "PL_STG_PROD_TO_DIM_PROD",
+	"properties": {
+		"folder": {
+			"name": "ADF_Weekly_Test/STG_TO_TGT"
+		},
+		"annotations": []
+	}
+}
