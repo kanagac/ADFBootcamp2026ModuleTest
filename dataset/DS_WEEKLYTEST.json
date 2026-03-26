@@ -21,7 +21,8 @@
 				"type": "AzureBlobStorageLocation",
 				"fileName": "ADF_WeeklyTest_Database_Records_v1.xlsx",
 				"container": "weekly-test-dataset"
-			}
+			},
+			"firstRowAsHeader": true
 		},
 		"schema": []
 	}
