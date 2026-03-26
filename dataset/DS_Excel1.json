@@ -1,0 +1,29 @@
+{
+	"name": "DS_Excel1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_Excel",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"name": {
+				"type": "String"
+			}
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": {
+				"value": "@dataset().name",
+				"type": "Expression"
+			},
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "ADF_WeeklyTest_Database_Records_v1.xlsx",
+				"container": "weekly-test-dataset"
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	}
+}
