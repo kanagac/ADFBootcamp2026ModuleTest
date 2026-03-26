@@ -1,5 +1,5 @@
 {
-	"name": "DF Stg customer to  dim customer",
+	"name": "DFStgcustomertodimcustomer",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -167,7 +167,17 @@
 				"     format: 'table',",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     errorHandlingOption: 'stopOnFirstError') ~> sink2"
+				"     errorHandlingOption: 'stopOnFirstError',",
+				"     mapColumn(",
+				"          customer_id,",
+				"          customer_name,",
+				"          email,",
+				"          country,",
+				"          created_date,",
+				"          contact,",
+				"          Continent,",
+				"          dw_created_at",
+				"     )) ~> sink2"
 			]
 		}
 	}

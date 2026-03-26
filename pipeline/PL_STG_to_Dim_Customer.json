@@ -1,0 +1,49 @@
+{
+	"name": "PL_STG_to_Dim_Customer",
+	"properties": {
+		"activities": [
+			{
+				"name": "Data flow1",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DFStgcustomertodimcustomer",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"source": {
+								"Tablename": "STG_CUSTOMERS_IN1725"
+							},
+							"target": {
+								"Tablename": "DIM_CUSTOMER_IN1725"
+							},
+							"sink1": {
+								"Tablename": "DIM_CUSTOMER_IN1725"
+							},
+							"sink2": {
+								"Tablename": "DIM_CUSTOMER_IN1725"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"folder": {
+			"name": "STAGING TO TARGET IN1725"
+		},
+		"annotations": []
+	}
+}
