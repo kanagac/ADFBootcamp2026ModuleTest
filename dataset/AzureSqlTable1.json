@@ -6,7 +6,7 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"customers": {
+			"payments": {
 				"type": "string",
 				"defaultValue": " "
 			}
@@ -16,7 +16,7 @@
 		"schema": [],
 		"typeProperties": {
 			"schema": "dbo",
-			"table": "DIM_CUSTOMER_IN1722"
+			"table": "STG_PAYMENTS_IN1722"
 		}
 	}
 }
