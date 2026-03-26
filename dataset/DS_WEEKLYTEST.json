@@ -1,0 +1,35 @@
+{
+	"name": "DS_WEEKLYTEST",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "LS_WEEKLYTEST",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"P_Container": {
+				"type": "string"
+			},
+			"P_SheetName": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": {
+				"value": "@dataset().P_SheetName",
+				"type": "Expression"
+			},
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": " ",
+				"folderPath": " ",
+				"container": {
+					"value": "@dataset().P_Container",
+					"type": "Expression"
+				}
+			}
+		},
+		"schema": []
+	}
+}

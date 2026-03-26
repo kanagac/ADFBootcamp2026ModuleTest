@@ -1,0 +1,25 @@
+{
+	"name": "DF_CUSOTMER",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_WEEKLYTEST",
+						"type": "DatasetReference"
+					},
+					"name": "SOURCE"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     partitionBy('hash', 1)) ~> SOURCE"
+			]
+		}
+	}
+}
